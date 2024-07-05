@@ -13,6 +13,7 @@ class TPSSHOOTER_API UWeaponFusilComponent : public USceneComponent
 	GENERATED_BODY()
 
 public:	
+	// Function that will implement firing action
 	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller);
 
 protected:

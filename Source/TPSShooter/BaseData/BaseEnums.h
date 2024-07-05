@@ -3,7 +3,7 @@
 #pragma once
 
 
-// As user defined collision channels are by default assigned to ECC_GameTraceChannel[number] in EngineTypes.h
+// As user defined collision channels and collision objects are by default assigned to ECC_GameTraceChannel[number] in EngineTypes.h
 // we want to just simplify their call by using preprocessor #define to replace their names by more
 // user friendly names
 
@@ -33,6 +33,9 @@ const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
 const FName SocketFPCamera = FName("CameraSocket");
+const FName SocketCharacterWeapon = FName("SocketWeapon");
+const FName SocketWeaponMuzzle = FName("SocketMuzzle");
 
 const FName DebugCategoryLedgeDetection = FName("LedgeDetection");
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
+const FName DebugCategoryRangeWeapon = FName("RangeWeapon");

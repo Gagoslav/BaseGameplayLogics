@@ -47,5 +47,5 @@ void UTPSBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const UCharacterEquipmentComponent* CharacterEquipment = InPlayerCharacter->GetCharacterEquipmentComponent();
 	CurrentEquipedItem = CharacterEquipment->GetCurrentEquipedItemType();
 
-	AimRotation = InPlayerCharacter->GetBaseAimRotation();
+	AimRotation = InPlayerCharacter->GetBaseAimRotation(); // Is a default method of APawn
 }

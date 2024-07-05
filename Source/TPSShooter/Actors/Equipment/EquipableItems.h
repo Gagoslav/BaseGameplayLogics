@@ -7,6 +7,7 @@
 #include "BaseData/BaseEnums.h"
 #include "EquipableItems.generated.h"
 
+// Just a base abstract class designed to be inherit from by all equipable objects
 
 UCLASS(Abstract, NotBlueprintable)
 class TPSSHOOTER_API AEquipableItems : public AActor
@@ -17,7 +18,9 @@ public:
 	EEquipedItemType GetEquipedItemType() const { return EquipedItemType; }
 protected:
 
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	// Each equipable item has its type that should be set in editor
 	EEquipedItemType EquipedItemType;
 
 	

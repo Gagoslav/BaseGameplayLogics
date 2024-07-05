@@ -13,6 +13,6 @@ public class TPSShooter : ModuleRules
 
 
 		// Make UBT to look for appropriate headers in Module's directory to avoid full relative paths' indication 
-		PrivateIncludePaths.AddRange(new string[] { Name/*"TPSShooter"*/ });
+		PrivateIncludePaths.AddRange(new string[] { Name /*"TPSShooter"*/ });
 	}
 }

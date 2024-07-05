@@ -145,6 +145,7 @@ protected:
 	float LowMantleMaxHeight = 125.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
+	// Component responsible for holding equipable items 
 	UCharacterEquipmentComponent* CharacterEquipmentComponent;
 
 

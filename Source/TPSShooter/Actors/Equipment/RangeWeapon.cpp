@@ -5,6 +5,7 @@
 #include "Components/Weapon/WeaponFusilComponent.h"
 #include "Character/TPSBaseCharacter.h"
 #include "Controllers/TPSPlayerController.h"
+#include "BaseData/BaseEnums.h"
 
 ARangeWeapon::ARangeWeapon()
 {
@@ -12,14 +13,14 @@ ARangeWeapon::ARangeWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
 
-	WeaponMuzle = CreateDefaultSubobject<UWeaponFusilComponent>(TEXT("WeaponFusil"));
-	WeaponMuzle->SetupAttachment(WeaponMesh, FName("SocketMuzzle"));
+	WeaponMuzle = CreateDefaultSubobject<UWeaponFusilComponent>(TEXT("WeaponMuzzle"));
+	WeaponMuzle->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
 }
 
 void ARangeWeapon::Fire()
 {
-	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("Only character can use the weapon and fire"));
+	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::Fire() Only character can use the weapon and fire"));
 	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
 	APlayerController* Controller = CharacterOwner->GetController<ATPSPlayerController>();
 	if (!IsValid(Controller))

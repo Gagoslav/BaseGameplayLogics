@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-//#include "BaseData/BaseEnums.h"
 #include "CharacterEquipmentComponent.generated.h"
 
 class ARangeWeapon;
@@ -24,7 +23,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
-	TSubclassOf< ARangeWeapon> SideArmClass;
+	TSubclassOf<ARangeWeapon> SideArmClass;
 
 private:
 	void CreateLoadOut();

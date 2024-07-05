@@ -13,8 +13,10 @@
 EEquipedItemType UCharacterEquipmentComponent::GetCurrentEquipedItemType() const
 {
 	EEquipedItemType Result = EEquipedItemType::None;
+	// Perform logic only if we have weapon in arms, othervise EEquipedItemType::None
 	if (IsValid(CurrentEquippedWeapon))
 	{
+		// Takes a type of equipped item from equipped item object
 		Result = CurrentEquippedWeapon->GetEquipedItemType();
 	}
 	return Result;
@@ -25,7 +27,7 @@ EEquipedItemType UCharacterEquipmentComponent::GetCurrentEquipedItemType() const
 void UCharacterEquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("Owner of Equipment component can be only ABaseCharacter actor"));
+	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("UCharacterEquipmentComponent::BeginPlay() Owner of Equipment component can be only ABaseCharacter actor"));
 	InBaseCharacter = StaticCast<ATPSBaseCharacter*>(GetOwner());
 	CreateLoadOut();
 	
@@ -46,8 +48,10 @@ void UCharacterEquipmentComponent::CreateLoadOut()
 	{
 		return;
 	}
+	// Spawn the weapon item that we heve chosen from editor
 	CurrentEquippedWeapon = GetWorld()->SpawnActor<ARangeWeapon>(SideArmClass);
-	CurrentEquippedWeapon->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("SocketWeapon"));
+	CurrentEquippedWeapon->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketCharacterWeapon);
+	// As owner should be hard object pointer we use Get() to case a SoftObjectPtr to simple ptr
 	CurrentEquippedWeapon->SetOwner(InBaseCharacter.Get());
 }
 
