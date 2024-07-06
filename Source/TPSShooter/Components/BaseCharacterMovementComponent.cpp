@@ -241,11 +241,6 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), true);
 	}
 
-	if (PreviousMovementMode == MOVE_Custom && PreviousCustomMode == (uint8)ECustomMovementMode::CMOVE_Ladder)
-	{
-
-	}
-
 	// Implement logic for Mantling custom movement mode
 	if (MovementMode == MOVE_Custom)
 	{
@@ -293,7 +288,7 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 // Extracted Method Mantling
 void UBaseCharacterMovementComponent::PhysMantling(float DeltaTime, uint32 Iterations)
 {
-	// Every tick (PhysCustom) get necessary time from normalized timer and add start time when the movement in AnimMontage starts  
+	// Every tick (PhysCustom) get necessary time from timer and add start time when the movement in AnimMontage starts  
 	float ElapsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(MantlingTimer) + CurrentMantlingParams.StartTime;
 
 	// Value under the particular time in curve vector

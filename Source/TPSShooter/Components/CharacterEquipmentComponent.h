@@ -23,12 +23,16 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	// Pointer to any class that is derived from ARangeWeapon!
 	TSubclassOf<ARangeWeapon> SideArmClass;
 
 private:
 	void CreateLoadOut();
 
+	// Private pointer to weapon that will be initialized by spawning an object of SideArmClass
 	ARangeWeapon* CurrentEquippedWeapon;
+
+	// Cached character owner of this component
 	TWeakObjectPtr<class ATPSBaseCharacter> InBaseCharacter;
 
 

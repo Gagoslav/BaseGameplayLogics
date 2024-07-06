@@ -7,9 +7,10 @@
 // we want to just simplify their call by using preprocessor #define to replace their names by more
 // user friendly names
 
-#define ECC_Climbing ECC_GameTraceChannel1
-#define ECC_InteractionVolume ECC_GameTraceChannel2
-#define ECC_Bullet ECC_GameTraceChannel3
+#define ECC_Bullet ECC_GameTraceChannel1
+#define ECC_Climbing ECC_GameTraceChannel2
+#define ECC_InteractionVolume ECC_GameTraceChannel3
+
 
 UENUM(BlueprintType)
 enum class EEquipedItemType : uint8
@@ -39,3 +40,5 @@ const FName SocketWeaponMuzzle = FName("SocketMuzzle");
 const FName DebugCategoryLedgeDetection = FName("LedgeDetection");
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 const FName DebugCategoryRangeWeapon = FName("RangeWeapon");
+
+const FName FXParamTraceEnd = FName("TraceEnd");

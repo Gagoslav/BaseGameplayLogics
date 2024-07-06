@@ -6,6 +6,7 @@
 #include "Components/SceneComponent.h"
 #include "WeaponFusilComponent.generated.h"
 
+class UNiagaraSystem;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TPSSHOOTER_API UWeaponFusilComponent : public USceneComponent
@@ -22,5 +23,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Damage")
 	float DamageAmount = 20.0f;
-		
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | VFX")
+	// Particle system for firing
+	UNiagaraSystem* MuzzleFlashFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | VFX")
+	// Particle system for firing
+	UNiagaraSystem* TraceFX;
 };

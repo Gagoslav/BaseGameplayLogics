@@ -6,6 +6,8 @@
 #include "Actors/Equipment/EquipableItems.h"
 #include "RangeWeapon.generated.h"
 
+
+class UAnimMontage;
 /**
  * 
  */
@@ -26,5 +28,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UWeaponFusilComponent* WeaponMuzle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	UAnimMontage* WeaponFireMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	UAnimMontage* CharacterFireMontage;
 	
+private:
+	float PlayAnimMontage(UAnimMontage* AnimMontage);
 };

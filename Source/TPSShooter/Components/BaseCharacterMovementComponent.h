@@ -35,7 +35,7 @@ struct FMantlingMovementParameters
 
 	FVector InitialAnimationLocation = FVector::ZeroVector; // Like initial character's location if he used the whole animation (from 0 second)
 
-	float Duration = 1.0f; // Duration of Anim montage
+	float Duration = 1.0f; // Duration of Anim montage // Hard coded
 	float StartTime = 0.0f; // The moment when we start working with curve
 
 	UCurveVector* MantlingCurve; // Curve vector that will regulate the behaviour of animation montage

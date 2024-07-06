@@ -7,15 +7,24 @@
 #include "DrawDebugHelpers.h"
 #include "Subsystems/TPSDebugSubsystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h" // Niagara is a distinct plugin and we need to connect it in Build.cs
+#include "NiagaraComponent.h"
 
 void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller)
 {
 	// Initialize necessary params for line trace
 	
 	// Location from where we start shooting
-	FVector MuzleLocation = GetComponentLocation();
+	FVector MuzzleLocation = GetComponentLocation();
 	FVector ShotEnd = ShotStart + FiringRange * ShotDirection;
 	FHitResult ShotResult;
+
+	if (MuzzleFlashFX != nullptr)
+	{
+		// If we have Niagara system then spawn it at pistol's muzzle
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFlashFX, MuzzleLocation, GetComponentRotation()); 
+	}
+
 
 #if ENABLE_DRAW_DEBUG
 	// According to the latest approach we need to encapsulate draw debug system in respective game instance's subsystem
@@ -46,9 +55,17 @@ bool bIsDebugEnabled = false;
 			HitActor->TakeDamage(DamageAmount,FDamageEvent {}, Controller, GetOwner());
 		}
 	}
+
+	if (TraceFX != nullptr)
+	{
+		// If we have Niagara system then spawn it at pistol's muzzle
+		UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, MuzzleLocation, GetComponentRotation());
+		TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd);
+	}
+
 	if (bIsDebugEnabled)
 	{
-		DrawDebugLine(GetWorld(), MuzleLocation, ShotEnd, FColor::Red, false, DrawTime, 0, 3.0f);
+		DrawDebugLine(GetWorld(), MuzzleLocation, ShotEnd, FColor::Red, false, DrawTime, 0, 3.0f);
 	}
 	
 	

@@ -51,9 +51,9 @@ void UCharacterEquipmentComponent::CreateLoadOut()
 	// Spawn the weapon item that we heve chosen from editor
 	CurrentEquippedWeapon = GetWorld()->SpawnActor<ARangeWeapon>(SideArmClass);
 	CurrentEquippedWeapon->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketCharacterWeapon);
+	// Here we set an owner for our spawned weapon that is a character
 	// As owner should be hard object pointer we use Get() to case a SoftObjectPtr to simple ptr
 	CurrentEquippedWeapon->SetOwner(InBaseCharacter.Get());
 }
 
 
-// Called every frame
