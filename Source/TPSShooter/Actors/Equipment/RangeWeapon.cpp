@@ -18,7 +18,24 @@ ARangeWeapon::ARangeWeapon()
 
 }
 
-void ARangeWeapon::Fire()
+void ARangeWeapon::StartFire()
+{
+	MakeShot();
+	// If the fire mode of our current weapon is full automate we will fire automatic 
+	if (WeaponFireMode == EWeaponFireMode::FullAutomate)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+		GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeapon::MakeShot, GetShotTimerInterval(), true);
+	}
+	
+}
+
+void ARangeWeapon::StopFire()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+}
+
+void ARangeWeapon::MakeShot()
 {
 	// Assert that only character can fire, otherwise crash an editor
 	// We have already initialize this actor's owner in UCharacterEquipmentComponent
@@ -38,15 +55,29 @@ void ARangeWeapon::Fire()
 
 	FVector PlayerViewPoint;
 	FRotator PlayerViewRotation;
-	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation); // GetPlayerViewPoint takes OUT parameters
+	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation); // GetPlayerViewPoint takes OUT parameters, makes them the centre of screen
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller);
 }
 
+FTransform ARangeWeapon::GetForegripTransform() const
+{
+	return WeaponMesh->GetSocketTransform(SocketForegrip);
+}
+
 float ARangeWeapon::PlayAnimMontage(UAnimMontage* AnimMontage)
 {
 	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+	float Result = 0.0f;
+	if (IsValid(WeaponAnimInstance))
+	{
+		return WeaponAnimInstance->Montage_Play(AnimMontage);
+	}
+	return Result;
+}
 
-	return WeaponAnimInstance->Montage_Play(AnimMontage);
+float ARangeWeapon::GetShotTimerInterval()
+{
+	return 60.0f / RateOfFire;
 }

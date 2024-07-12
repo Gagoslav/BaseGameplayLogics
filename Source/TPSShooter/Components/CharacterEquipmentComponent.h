@@ -18,8 +18,9 @@ public:
 
     EEquipedItemType GetCurrentEquipedItemType() const;
 	virtual void BeginPlay()override;
+	inline ARangeWeapon* GetCurrentWeapon() const { return CurrentEquippedWeapon; }
 
-	void Fire();
+	
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")

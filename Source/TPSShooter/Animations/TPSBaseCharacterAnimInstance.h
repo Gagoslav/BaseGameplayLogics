@@ -61,6 +61,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	float LadderSpeedRatio = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation | Weapon")
+	FTransform ForegripSocketTransform;
+
 
 private:
 	// Animation is always loaded when we already have a character

@@ -5,6 +5,7 @@
 #include "Components/BaseCharacterMovementComponent.h"
 #include "Character/TPSBaseCharacter.h"
 #include "Components/CharacterEquipmentComponent.h"
+#include "Actors/Equipment/RangeWeapon.h"
 
 void UTPSBaseCharacterAnimInstance::NativeBeginPlay()
 {
@@ -46,6 +47,12 @@ void UTPSBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	const UCharacterEquipmentComponent* CharacterEquipment = InPlayerCharacter->GetCharacterEquipmentComponent();
 	CurrentEquipedItem = CharacterEquipment->GetCurrentEquipedItemType();
+
+	ARangeWeapon* CurrentWeapon = CharacterEquipment->GetCurrentWeapon();
+	if (IsValid(CurrentWeapon))
+	{
+		ForegripSocketTransform = CurrentWeapon->GetForegripTransform();
+	}
 
 	AimRotation = InPlayerCharacter->GetBaseAimRotation(); // Is a default method of APawn
 }

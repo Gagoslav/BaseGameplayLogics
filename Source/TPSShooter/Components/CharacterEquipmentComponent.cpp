@@ -34,13 +34,9 @@ void UCharacterEquipmentComponent::BeginPlay()
 	
 }
 
-void UCharacterEquipmentComponent::Fire()
-{
-	if (IsValid(CurrentEquippedWeapon))
-	{
-		CurrentEquippedWeapon->Fire();
-	}
-}
+
+
+
 
 void UCharacterEquipmentComponent::CreateLoadOut()
 {

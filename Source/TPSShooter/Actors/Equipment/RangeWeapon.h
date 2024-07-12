@@ -6,11 +6,16 @@
 #include "Actors/Equipment/EquipableItems.h"
 #include "RangeWeapon.generated.h"
 
+UENUM(BlueprintType)
+enum class EWeaponFireMode : uint8
+{
+	Single,
+	FullAutomate
+};
+
 
 class UAnimMontage;
-/**
- * 
- */
+
 UCLASS(Blueprintable)
 class TPSSHOOTER_API ARangeWeapon : public AEquipableItems
 {
@@ -19,7 +24,11 @@ public:
 
 	ARangeWeapon();
 
-	void Fire();
+	void StartFire();
+	
+	void StopFire();
+
+	FTransform GetForegripTransform() const;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -34,7 +43,19 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
 	UAnimMontage* CharacterFireMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 1.0f, UIMin = 1.0f))
+	// Rate of fire in rounds per minute
+	float RateOfFire = 600.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters")
+	EWeaponFireMode WeaponFireMode = EWeaponFireMode::Single;
 	
 private:
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
+	float GetShotTimerInterval();
+	void MakeShot();
+
+
+	FTimerHandle ShotTimer;
 };

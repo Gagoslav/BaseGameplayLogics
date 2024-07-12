@@ -16,7 +16,8 @@ UENUM(BlueprintType)
 enum class EEquipedItemType : uint8
 {
 	None,
-	Pistol
+	Pistol,
+	AssaultRifle
 };
 
 UENUM(BlueprintType)
@@ -33,9 +34,11 @@ enum class ECustomMovementMode : uint8
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
 const FName CollisionProfileRagdoll = FName("Ragdoll");
+
 const FName SocketFPCamera = FName("CameraSocket");
 const FName SocketCharacterWeapon = FName("SocketWeapon");
 const FName SocketWeaponMuzzle = FName("SocketMuzzle");
+const FName SocketForegrip = FName("SocketForegrip");
 
 const FName DebugCategoryLedgeDetection = FName("LedgeDetection");
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");

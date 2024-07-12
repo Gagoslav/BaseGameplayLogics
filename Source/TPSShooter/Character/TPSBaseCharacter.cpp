@@ -10,6 +10,7 @@
 #include "Actors/Interactive/Environment/Ladder.h"
 #include "BaseData/BaseEnums.h"
 #include "Engine/DamageEvents.h"
+#include "Actors/Equipment/RangeWeapon.h"
 
 // In initialization list we reset the character movement component of base class (ACharacter) to customly created one, using SetDefaultSubobjectClass
 ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer) 
@@ -281,12 +282,24 @@ void ATPSBaseCharacter::Landed(const FHitResult& Hit)
 	}
 }
 
-void ATPSBaseCharacter::Fire()
+void ATPSBaseCharacter::StartFire()
 {
-	CharacterEquipmentComponent->Fire();
+	ARangeWeapon* CurrentWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
+	if (IsValid(CurrentWeapon))
+	{
+		CurrentWeapon->StartFire();
+	}
 }
 
 
+void ATPSBaseCharacter::StopFire()
+{
+	ARangeWeapon* CurrentWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
+	if (IsValid(CurrentWeapon))
+	{
+		CurrentWeapon->StopFire();
+	}
+}
 
 void ATPSBaseCharacter::RegisterInteractiveActor(AInteractiveActor* InInteractiveActor)
 {

@@ -107,7 +107,8 @@ public:
 	// virtual method of ACharacter, triggers when a character has landed on some surface
 	virtual void Landed(const FHitResult& Hit) override; 
 
-	void Fire();
+	void StartFire();
+	void StopFire();
 
 	// Getter of new customly created movement component
 	inline UBaseCharacterMovementComponent* GetBaseCharacterMovement() const { return BaseCharacterMovementComponent; }

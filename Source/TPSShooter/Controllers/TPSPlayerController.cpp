@@ -34,7 +34,8 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("SwimRight", this, &ATPSPlayerController::SwimRight);
 	InputComponent->BindAxis("SwimUp", this, &ATPSPlayerController::SwimUp);
 	InputComponent->BindAxis("ClimbingLadderUp", this, &ATPSPlayerController::ClimbLadderUp);
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATPSPlayerController::Fire);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATPSPlayerController::StartFire);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &ATPSPlayerController::StopFire);
 
 }
 
@@ -156,10 +157,18 @@ void ATPSPlayerController::InteractWithLadder()
 	}
 }
 
-void ATPSPlayerController::Fire()
+void ATPSPlayerController::StartFire()
 {
 	if (InBaseCharacter.IsValid())
 	{
-		InBaseCharacter->Fire();
+		InBaseCharacter->StartFire();
+	}
+}
+
+void ATPSPlayerController::StopFire()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->StopFire();
 	}
 }

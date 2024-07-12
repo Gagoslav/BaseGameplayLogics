@@ -7,7 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "Subsystems/TPSDebugSubsystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "NiagaraFunctionLibrary.h" // Niagara is a distinct plugin and we need to connect it in Build.cs
+#include "NiagaraFunctionLibrary.h" // Niagara is a distinct plugin and we need to connect (add) it in Build.cs
 #include "NiagaraComponent.h"
 
 void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller)
@@ -60,7 +60,8 @@ bool bIsDebugEnabled = false;
 	{
 		// If we have Niagara system then spawn it at pistol's muzzle
 		UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, MuzzleLocation, GetComponentRotation());
-		TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd);
+		// This function may initialize user defined value by its name that is set in Particle system in editor 
+		TraceFXComponent->SetVectorParameter(FXParamTraceEnd, ShotEnd); 
 	}
 
 	if (bIsDebugEnabled)
