@@ -58,7 +58,7 @@ void ARangeWeapon::MakeShot()
 	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation); // GetPlayerViewPoint takes OUT parameters, makes them the centre of screen
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
-	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller);
+	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller); // make a shot
 }
 
 FTransform ARangeWeapon::GetForegripTransform() const

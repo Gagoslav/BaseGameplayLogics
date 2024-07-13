@@ -6,6 +6,24 @@
 #include "Components/SceneComponent.h"
 #include "WeaponFusilComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FDecalInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Decal Info")
+	UMaterialInterface* DecalMaterial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Decal Info")
+	FVector DecalSize = FVector(5.0f, 5.0f, 5.0f);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Decal Info")
+	float DecalLifetime = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Decal Info")
+	float DecalFadeoutTime = 5.0f;
+};
+
 class UNiagaraSystem;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -31,4 +49,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | VFX")
 	// Particle system for firing
 	UNiagaraSystem* TraceFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Decals")
+	FDecalInfo DefaultDecalInfo;
 };

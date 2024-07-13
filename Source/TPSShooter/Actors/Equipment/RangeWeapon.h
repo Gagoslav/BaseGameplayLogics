@@ -36,12 +36,15 @@ protected:
 	class USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// Weapon's muzzle is a distinct component that is responsible for damage amount and fire distance
 	class UWeaponFusilComponent* WeaponMuzle;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	// Animation of weapon's skeletal mesh
 	UAnimMontage* WeaponFireMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	// Animation of character designed for particular weapon, is stored in Weapon class and is played from pointer to character
 	UAnimMontage* CharacterFireMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 1.0f, UIMin = 1.0f))

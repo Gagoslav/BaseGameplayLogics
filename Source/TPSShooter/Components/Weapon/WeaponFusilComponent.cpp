@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h" // Niagara is a distinct plugin and we need to connect (add) it in Build.cs
 #include "NiagaraComponent.h"
+#include "Components/DecalComponent.h"
 
 void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller)
 {
@@ -52,7 +53,15 @@ bool bIsDebugEnabled = false;
 		AActor* HitActor = ShotResult.GetActor();
 		if (IsValid(HitActor))
 		{
+			// Apply damage
 			HitActor->TakeDamage(DamageAmount,FDamageEvent {}, Controller, GetOwner());
+		}
+
+		UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, ShotResult.ImpactPoint, ShotResult.ImpactNormal.ToOrientationRotator());
+		if (IsValid(DecalComponent))
+		{
+			DecalComponent->SetFadeScreenSize(0.001f); // Fadeout will be applied if decal take 1/1000 percent of screen. otherwise on long distance it will fade automatically
+			DecalComponent->SetFadeOut(DefaultDecalInfo.DecalLifetime, DefaultDecalInfo.DecalFadeoutTime);
 		}
 	}
 
