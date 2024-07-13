@@ -7,6 +7,7 @@
 #include "WeaponFusilComponent.generated.h"
 
 USTRUCT(BlueprintType)
+// Structre to define general data about decals
 struct FDecalInfo
 {
 	GENERATED_BODY()

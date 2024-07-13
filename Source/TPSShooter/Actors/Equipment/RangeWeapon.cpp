@@ -55,10 +55,28 @@ void ARangeWeapon::MakeShot()
 
 	FVector PlayerViewPoint;
 	FRotator PlayerViewRotation;
+	// For this we got APlayerController
 	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation); // GetPlayerViewPoint takes OUT parameters, makes them the centre of screen
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+	// Add spread offset from screen's sentral point
+	ViewDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, FMath::DegreesToRadians(SpreadAngle)), PlayerViewRotation);
+
 	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller); // make a shot
+}
+
+FVector ARangeWeapon::GetBulletSpreadOffset(float Angle, FRotator ShotRotation)
+{
+	float SpreadSize = FMath::Tan(Angle); // Get normalized length of Spread vector (counter located cathetus || tangent)
+	float RotationAngle = FMath::RandRange(0.0f, 2 * PI);
+
+	float SpreadY = FMath::Cos(RotationAngle);
+	float SpreadZ = FMath::Sin(RotationAngle);
+	FVector Result = (ShotRotation.RotateVector(FVector::UpVector) * SpreadZ
+		+ ShotRotation.RotateVector(FVector::RightVector) * SpreadY) * SpreadSize;
+
+	return Result;
+
 }
 
 FTransform ARangeWeapon::GetForegripTransform() const
