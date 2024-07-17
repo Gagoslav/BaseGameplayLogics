@@ -29,8 +29,9 @@ void UTPSBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 	
-	// Get main values every frame to change owner character's mesh accordingly
 	
+	// Get main values every frame to change owner character's mesh accordingly
+	bIsAiming = InPlayerCharacter->GetIsAiming();
 	Speed = MovementComponent->Velocity.Size();
 	Direction = CalculateDirection(MovementComponent->Velocity, InPlayerCharacter->GetActorRotation());
 	bIsFalling = MovementComponent->IsFalling();
@@ -55,4 +56,5 @@ void UTPSBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	AimRotation = InPlayerCharacter->GetBaseAimRotation(); // Is a default method of APawn
+
 }

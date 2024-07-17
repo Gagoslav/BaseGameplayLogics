@@ -65,6 +65,14 @@ void ATPSBaseCharacter::EndSprint()
 
 
 
+void ATPSBaseCharacter::OnStartAimingInternal()
+{
+}
+
+void ATPSBaseCharacter::OnStopAimingInternal()
+{
+}
+
 void ATPSBaseCharacter::TryChangeSprintState()
 {
 	// checks if character can sprint and starts or ends sprinting accordingly
@@ -299,6 +307,51 @@ void ATPSBaseCharacter::StopFire()
 	{
 		CurrentWeapon->StopFire();
 	}
+}
+
+void ATPSBaseCharacter::StartAiming()
+{
+	ARangeWeapon* CurrentRangeWeapon = GetCharacterEquipmentComponent()->GetCurrentWeapon();
+	if (!IsValid(CurrentRangeWeapon))
+	{
+		return;
+	}
+	bIsAiming = true;
+	CurrentAimingMovementSpeed = CurrentRangeWeapon->GetAimMovementMaxSpeed();
+	CurrentRangeWeapon->StartAim();
+	OnStartAiming();
+}
+
+void ATPSBaseCharacter::StopAiming()
+{
+	if (!bIsAiming)
+	{
+		return;
+	}
+	ARangeWeapon* CurrentRangeWeapon = GetCharacterEquipmentComponent()->GetCurrentWeapon();
+	if (IsValid(CurrentRangeWeapon))
+	{
+		CurrentRangeWeapon->StopAim();
+	}
+	bIsAiming = false;
+	CurrentAimingMovementSpeed = 0.0f;
+	OnStopAiming();
+}
+
+void ATPSBaseCharacter::OnStartAiming_Implementation()
+{
+	OnStartAimingInternal();
+}
+
+void ATPSBaseCharacter::OnStopAiming_Implementation()
+{
+	OnStopAimingInternal();
+}
+
+float ATPSBaseCharacter::GetAimingMovementSpeed() const
+{
+	return CurrentAimingMovementSpeed;
+	
 }
 
 void ATPSBaseCharacter::RegisterInteractiveActor(AInteractiveActor* InInteractiveActor)

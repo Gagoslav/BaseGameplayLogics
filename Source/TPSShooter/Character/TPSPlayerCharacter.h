@@ -46,5 +46,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|SpringArm");
 	class USpringArmComponent* SpringArm;
+
+	virtual void OnStartAimingInternal() override;
+	virtual void OnStopAimingInternal() override;
 	
 };

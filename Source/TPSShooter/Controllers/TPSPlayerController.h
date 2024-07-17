@@ -47,8 +47,11 @@ private:
 	void ClimbLadderUp(float Value);
 	void InteractWithLadder();
 
-	void StartFire();
-	void StopFire();
+	void PlayerStartFire();
+	void PlayerStopFire();
+
+	void StartAiming();
+	void StopAiming();
 private:
 	bool bIgnoreCameraPitch = false;
 };

@@ -34,8 +34,10 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("SwimRight", this, &ATPSPlayerController::SwimRight);
 	InputComponent->BindAxis("SwimUp", this, &ATPSPlayerController::SwimUp);
 	InputComponent->BindAxis("ClimbingLadderUp", this, &ATPSPlayerController::ClimbLadderUp);
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATPSPlayerController::StartFire);
-	InputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &ATPSPlayerController::StopFire);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATPSPlayerController::PlayerStartFire);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &ATPSPlayerController::PlayerStopFire);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ATPSPlayerController::StartAiming);
+	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ATPSPlayerController::StopAiming);
 
 }
 
@@ -157,7 +159,7 @@ void ATPSPlayerController::InteractWithLadder()
 	}
 }
 
-void ATPSPlayerController::StartFire()
+void ATPSPlayerController::PlayerStartFire()
 {
 	if (InBaseCharacter.IsValid())
 	{
@@ -165,10 +167,26 @@ void ATPSPlayerController::StartFire()
 	}
 }
 
-void ATPSPlayerController::StopFire()
+void ATPSPlayerController::PlayerStopFire()
 {
 	if (InBaseCharacter.IsValid())
 	{
 		InBaseCharacter->StopFire();
+	}
+}
+
+void ATPSPlayerController::StartAiming()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->StartAiming();
+	}
+}
+
+void ATPSPlayerController::StopAiming()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->StopAiming();
 	}
 }

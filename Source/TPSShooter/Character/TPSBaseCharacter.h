@@ -110,6 +110,19 @@ public:
 	void StartFire();
 	void StopFire();
 
+	void StartAiming();
+	void StopAiming();
+
+	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
+	void OnStartAiming();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")
+	void OnStopAiming();
+
+	float GetAimingMovementSpeed() const;
+
 	// Getter of new customly created movement component
 	inline UBaseCharacterMovementComponent* GetBaseCharacterMovement() const { return BaseCharacterMovementComponent; }
 
@@ -121,6 +134,9 @@ public:
 
 	void RegisterInteractiveActor(AInteractiveActor* InInteractiveActor);
 	void UnRegisterInteractiveActor(AInteractiveActor* InInteractiveActor);
+
+	inline bool GetIsAiming() const { return bIsAiming; }
+
 
 protected:
 
@@ -162,6 +178,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Attributes")
 	class UCurveFloat* FallDamageCurve;
 
+	virtual void OnStartAimingInternal();
+	virtual void OnStopAimingInternal();
+
 private:
 	// Declare customly created movement component
 	 UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
@@ -169,7 +188,9 @@ private:
 
 	 // Bool variable that is triggered by Start/End sprint functions in this class called from player controller class
 	 // is used to check every frame if the character can sprint
-	 bool bShouldSprint = 0;
+	 bool bShouldSprint = false;
+
+	 bool bIsAiming = false;
 
 	 // Select appropriate mantling settings for particular ledge (low mantle setting or high mantle settings)
 	 const FMantlingSettings& GetMantlingSettings(float LedgeHeight) const;
@@ -181,4 +202,5 @@ private:
 	void EnableRagdoll();
 
 	FVector CurrentFallApex;
+	float CurrentAimingMovementSpeed;
 };

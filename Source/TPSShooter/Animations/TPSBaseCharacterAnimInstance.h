@@ -64,6 +64,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation | Weapon")
 	FTransform ForegripSocketTransform;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation | Weapon")
+	bool bIsAiming = false;
+
 
 private:
 	// Animation is always loaded when we already have a character

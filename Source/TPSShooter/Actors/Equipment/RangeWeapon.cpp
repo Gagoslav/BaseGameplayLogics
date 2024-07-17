@@ -35,6 +35,16 @@ void ARangeWeapon::StopFire()
 	GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
 }
 
+void ARangeWeapon::StartAim()
+{
+	bIsAiming = true;
+}
+
+void ARangeWeapon::StopAim()
+{
+	bIsAiming = false;
+}
+
 void ARangeWeapon::MakeShot()
 {
 	// Assert that only character can fire, otherwise crash an editor
@@ -60,20 +70,20 @@ void ARangeWeapon::MakeShot()
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 	// Add spread offset from screen's sentral point
-	ViewDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, FMath::DegreesToRadians(SpreadAngle)), PlayerViewRotation);
+	ViewDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, GetCurrentBulletSpreadAngle()), PlayerViewRotation);
 
 	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller); // make a shot
 }
 
-FVector ARangeWeapon::GetBulletSpreadOffset(float Angle, FRotator ShotRotation)
+FVector ARangeWeapon::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const
 {
 	float SpreadSize = FMath::Tan(Angle); // Get normalized length of Spread vector (counter located cathetus || tangent)
-	float RotationAngle = FMath::RandRange(0.0f, 2 * PI);
+	float RotationAngle = FMath::RandRange(0.0f, 2 * PI); // random number from 0 to 360, like pick random point on circumference
 
 	float SpreadY = FMath::Cos(RotationAngle);
 	float SpreadZ = FMath::Sin(RotationAngle);
-	FVector Result = (ShotRotation.RotateVector(FVector::UpVector) * SpreadZ
-		+ ShotRotation.RotateVector(FVector::RightVector) * SpreadY) * SpreadSize;
+	FVector Result = (ShotRotation.RotateVector(FVector::RightVector) * SpreadY + ShotRotation.RotateVector(FVector::UpVector) * SpreadZ) *SpreadSize; // Find offset Direction and time it by ratio 
+	//UE_LOG(LogTemp, Warning, TEXT("%f %f %f"),Result.X, Result.Y, Result.Z );
 
 	return Result;
 
@@ -84,8 +94,17 @@ FTransform ARangeWeapon::GetForegripTransform() const
 	return WeaponMesh->GetSocketTransform(SocketForegrip);
 }
 
+float ARangeWeapon::GetCurrentBulletSpreadAngle() const
+{
+	// As we have different spreads of firing depending if the character is aiming or just shooting
+	float AngleInDegrees = bIsAiming ? AimSpreadAngle : SpreadAngle;
+	return FMath::DegreesToRadians(AngleInDegrees);
+}
+
 float ARangeWeapon::PlayAnimMontage(UAnimMontage* AnimMontage)
 {
+	// Wrapper function designed to run the Montage_Play method of anim instance if we have one
+
 	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
 	float Result = 0.0f;
 	if (IsValid(WeaponAnimInstance))

@@ -19,6 +19,7 @@ void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, ACont
 	FVector MuzzleLocation = GetComponentLocation();
 	FVector ShotEnd = ShotStart + FiringRange * ShotDirection;
 	FHitResult ShotResult;
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("%f, %f, %f"), ShotDirection.X, ShotDirection.Y, ShotDirection.Z));
 
 	if (MuzzleFlashFX != nullptr)
 	{

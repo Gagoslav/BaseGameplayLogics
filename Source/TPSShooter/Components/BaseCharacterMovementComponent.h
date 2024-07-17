@@ -66,6 +66,7 @@ public:
 	inline const ALadder* GetCurrentLadder() const { return CurrentLadder; }
 	float GetLadderSpeedRatio() const;
 
+	// One of general virtual methods of character movement component
 	virtual float GetMaxSpeed() const override;
 
 protected:

@@ -5,6 +5,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/BaseCharacterMovementComponent.h"
+#include "Actors/Equipment/RangeWeapon.h"
+#include "Components/CharacterEquipmentComponent.h"
 
 ATPSPlayerCharacter::ATPSPlayerCharacter(const FObjectInitializer& ObjectInitializer):
 	Super(ObjectInitializer)
@@ -147,6 +149,44 @@ bool ATPSPlayerCharacter::CanJumpInternal_Implementation() const
 {
 	// We consider that we always can jump
 	return bIsCrouched || Super::CanJumpInternal_Implementation();
+}
+
+void ATPSPlayerCharacter::OnStartAimingInternal()
+{
+	Super::OnStartAimingInternal();
+	// Be sure that our player character isn't possessed by AI controller (that's possible)
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+	// Get Camera Manager (is just public field in APlayerController class)
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+	if (IsValid(CameraManager))
+	{
+		ARangeWeapon* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
+		// Sets new field of view
+		CameraManager->SetFOV(CurrentRangeWeapon->GetAimFOV());
+	}
+
+}
+
+void ATPSPlayerCharacter::OnStopAimingInternal()
+{
+	Super::OnStopAimingInternal();
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
+	// Get Camera Manager (is just public field in APlayerController class)
+	APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
+	if (IsValid(CameraManager))
+	{
+		ARangeWeapon* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
+		// Resets the FOV to default value
+		CameraManager->UnlockFOV();
+	}
 }
 
 
