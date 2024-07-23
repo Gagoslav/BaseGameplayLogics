@@ -23,6 +23,7 @@ public:
 	FOnDeathEventSignature OnDeathEvent;
 
 	inline bool IsAlive() { return Health > 0.0f; }
+	inline float GetHealthPercent() const { return Health / MaxHealth; }
 
 protected:
 	

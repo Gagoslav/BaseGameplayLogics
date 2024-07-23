@@ -9,6 +9,8 @@
 /**
  * 
  */
+class UPlayerHUDWidget;
+
 UCLASS()
 class TPSSHOOTER_API ATPSPlayerController : public APlayerController
 {
@@ -24,6 +26,9 @@ protected:
 
 	//Implement player input
 	virtual void SetupInputComponent() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+	TSubclassOf<UPlayerHUDWidget> PlayerHUDWidgetClass;
 
 private:
 	//Declaring our InBaseCharacter as Soft object pointer as we may not want to load it in memory immidiately
@@ -52,6 +57,10 @@ private:
 
 	void StartAiming();
 	void StopAiming();
+
+	void Reload();
 private:
+	void CreateAndInitializeWidgets();
+	UPlayerHUDWidget* PlayerHUDWidget = nullptr;
 	bool bIgnoreCameraPitch = false;
 };

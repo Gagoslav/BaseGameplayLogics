@@ -1,14 +1,21 @@
- // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Controllers/TPSPlayerController.h"
 #include "Character/TPSBaseCharacter.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/Widget/PlayerHUDWidget.h"
+#include "UI/Widget/RaticleWidget.h"
+#include "UI/Widget/AmmoWidget.h"
+#include "Components/CharacterEquipmentComponent.h"
 
 void ATPSPlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 	// Use dynamic cast Not to crash if we have invalid type
 	InBaseCharacter = Cast<ATPSBaseCharacter>(InPawn);
+	// By default pipeline the HUD widget is created and initialized (including bindings) in player controller class
+	CreateAndInitializeWidgets();
 
 }
 
@@ -38,6 +45,7 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &ATPSPlayerController::PlayerStopFire);
 	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ATPSPlayerController::StartAiming);
 	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ATPSPlayerController::StopAiming);
+	InputComponent->BindAction("Reload", EInputEvent::IE_Pressed, this, &ATPSPlayerController::Reload);
 
 }
 
@@ -189,4 +197,47 @@ void ATPSPlayerController::StopAiming()
 	{
 		InBaseCharacter->StopAiming();
 	}
+}
+
+void ATPSPlayerController::Reload()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->Reload();
+	}
+}
+
+void ATPSPlayerController::CreateAndInitializeWidgets()
+{
+	// Make sure we haven't already created and added to viewport the HUD widget 
+	if (!IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
+		if (IsValid(PlayerHUDWidget))
+		{
+			PlayerHUDWidget->AddToViewport();
+		}
+	}
+
+	// Get Widgets that are within the HUD widget
+	if (IsValid(PlayerHUDWidget)&& InBaseCharacter.IsValid())
+	{
+		URaticleWidget* RaticleWidget = PlayerHUDWidget->GetRaticleWidget();
+		if (IsValid(RaticleWidget))
+		{
+			// Bind the delegate of ABaseCharacter with OnAimingStateChanged function of URaticleWidget
+			InBaseCharacter->OnAimingStateChanged.AddUFunction(RaticleWidget, FName("OnAimingStateChanged"));
+		}
+
+		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetAmmoWidget();
+		if (IsValid(AmmoWidget))
+		{
+			UCharacterEquipmentComponent* CharacterEquipment = InBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+
+			// Bind the delegate of UCharacterEquipmentComponent with UpdateAmmoCount function of UAmmoWidget
+			CharacterEquipment->OnCurrentWeaponAmmoChangedEvent.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+		}
+	}
+
+
 }

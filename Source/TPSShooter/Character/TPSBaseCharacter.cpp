@@ -67,10 +67,20 @@ void ATPSBaseCharacter::EndSprint()
 
 void ATPSBaseCharacter::OnStartAimingInternal()
 {
+	// Broadcast the delegate with its param to all bound actors and call their function (URaticleWidget, corresponding function OnAimingStateChanged(true))
+	if (OnAimingStateChanged.IsBound())
+	{
+		OnAimingStateChanged.Broadcast(true);
+	}
 }
 
 void ATPSBaseCharacter::OnStopAimingInternal()
 {
+	// Broadcast the delegate with its param to all bound actors and call their function (URaticleWidget, corresponding function OnAimingStateChanged(false))
+	if (OnAimingStateChanged.IsBound())
+	{
+		OnAimingStateChanged.Broadcast(false);
+	}
 }
 
 void ATPSBaseCharacter::TryChangeSprintState()
@@ -290,6 +300,7 @@ void ATPSBaseCharacter::Landed(const FHitResult& Hit)
 	}
 }
 
+
 void ATPSBaseCharacter::StartFire()
 {
 	ARangeWeapon* CurrentWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
@@ -336,6 +347,14 @@ void ATPSBaseCharacter::StopAiming()
 	bIsAiming = false;
 	CurrentAimingMovementSpeed = 0.0f;
 	OnStopAiming();
+}
+
+void ATPSBaseCharacter::Reload() const
+{
+	if (IsValid(GetCharacterEquipmentComponent()->GetCurrentWeapon()))
+	{
+		CharacterEquipmentComponent->ReloadCurrentWeapon();
+	}
 }
 
 void ATPSBaseCharacter::OnStartAiming_Implementation()

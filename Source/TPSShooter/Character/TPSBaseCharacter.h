@@ -13,6 +13,8 @@ class AInteractiveActor;
 class ALadder;
 class UCharacterAttributes;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAimingStateChanged, bool)
+
 //Declare a structure that will hold parameters for mantling animation correct play
 USTRUCT(BlueprintType)
 struct FMantlingSettings
@@ -107,11 +109,14 @@ public:
 	// virtual method of ACharacter, triggers when a character has landed on some surface
 	virtual void Landed(const FHitResult& Hit) override; 
 
+
 	void StartFire();
 	void StopFire();
 
 	void StartAiming();
 	void StopAiming();
+
+	void Reload() const;
 
 	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
 
@@ -123,6 +128,10 @@ public:
 
 	float GetAimingMovementSpeed() const;
 
+	inline bool GetIsAiming() const { return bIsAiming; }
+
+	FOnAimingStateChanged OnAimingStateChanged;
+
 	// Getter of new customly created movement component
 	inline UBaseCharacterMovementComponent* GetBaseCharacterMovement() const { return BaseCharacterMovementComponent; }
 
@@ -131,11 +140,13 @@ public:
 
 
 	inline const UCharacterEquipmentComponent* GetCharacterEquipmentComponent()const { return CharacterEquipmentComponent; }
+	inline UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable()const { return CharacterEquipmentComponent; }
+	inline const UCharacterAttributes* GetCharacterAttributesComponent() const { return CharacterAttributesComponent; }
 
 	void RegisterInteractiveActor(AInteractiveActor* InInteractiveActor);
 	void UnRegisterInteractiveActor(AInteractiveActor* InInteractiveActor);
 
-	inline bool GetIsAiming() const { return bIsAiming; }
+	
 
 
 protected:
@@ -178,6 +189,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Attributes")
 	class UCurveFloat* FallDamageCurve;
 
+
+	// Methods designed to encapsulate base logics of BlueprintNativeEvents
 	virtual void OnStartAimingInternal();
 	virtual void OnStopAimingInternal();
 

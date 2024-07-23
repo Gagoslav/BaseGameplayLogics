@@ -166,7 +166,7 @@ void ATPSPlayerCharacter::OnStartAimingInternal()
 	{
 		ARangeWeapon* CurrentRangeWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
 		// Sets new field of view
-		CameraManager->SetFOV(CurrentRangeWeapon->GetAimFOV());
+		CameraManager->SetFOV(CurrentRangeWeapon->GetAimFOV()); // Main function SetFOV, why we made this all
 	}
 
 }

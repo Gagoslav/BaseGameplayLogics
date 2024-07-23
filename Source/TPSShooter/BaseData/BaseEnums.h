@@ -21,6 +21,15 @@ enum class EEquipedItemType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EAmunitionType : uint8
+{
+	None,
+	Pistol,
+	AssaultRifle,
+	MAX UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
 enum class ECustomMovementMode : uint8
 {
 	CMOVE_None = 0 UMETA(DisplayName = "None"),

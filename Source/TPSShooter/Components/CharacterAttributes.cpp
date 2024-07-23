@@ -34,6 +34,7 @@ void UCharacterAttributes::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UCharacterAttributes::BeginPlay()
 {
 	Super::BeginPlay();
+	checkf(MaxHealth > 0.0f, TEXT("UCharacterAttributes::BeginPlay() max health cannot be equal to 0"));
 	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("UCharacterAttributes::BeginPlay(), UCharacterAttributes can be used only with ATPSBaseCharacter"));
 	InBaseCharacter = StaticCast<ATPSBaseCharacter*>(GetOwner());
 

@@ -45,12 +45,58 @@ void ARangeWeapon::StopAim()
 	bIsAiming = false;
 }
 
+void ARangeWeapon::StartReload()
+{
+	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
+	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
+	bIsReloading = true;
+
+	if (IsValid(CharacterReloadMontage))
+	{
+		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
+		PlayAnimMontage(WeaponReloadMontage);
+		GetWorld()->GetTimerManager().SetTimer(ReloadTimer,  [this](){EndReload(true); }, MontageDuration, false);
+
+	}
+	else
+	{
+		EndReload(true);
+	}
+}
+
+void ARangeWeapon::EndReload(bool bIsSuccess)
+{
+	if (!bIsReloading)
+	{
+		return;
+	}
+
+	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
+
+	bIsReloading = false;
+	if (OnReloadCompleteEvent.IsBound() && bIsSuccess)
+	{
+		OnReloadCompleteEvent.Broadcast();
+	}
+}
+
 void ARangeWeapon::MakeShot()
 {
 	// Assert that only character can fire, otherwise crash an editor
 	// We have already initialize this actor's owner in UCharacterEquipmentComponent
 	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::Fire() Only character can use the weapon and fire"));
 	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
+
+	if (!CanShoot())
+	{
+		if (Ammo == 0 && bAutoReload)
+		{
+			CharacterOwner->Reload();
+		}
+		StopFire();
+		return;
+	}
+	EndReload(false);
 
 	// Pass Anim montage for character that is located in weapon class to be played by character
 	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
@@ -72,6 +118,8 @@ void ARangeWeapon::MakeShot()
 	// Add spread offset from screen's sentral point
 	ViewDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, GetCurrentBulletSpreadAngle()), PlayerViewRotation);
 
+	// Decrease bullets number
+	SetAmmo(Ammo-1);
 	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller); // make a shot
 }
 
@@ -92,6 +140,32 @@ FVector ARangeWeapon::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) 
 FTransform ARangeWeapon::GetForegripTransform() const
 {
 	return WeaponMesh->GetSocketTransform(SocketForegrip);
+}
+
+void ARangeWeapon::SetAmmo(int32 NewAmmo)
+{
+	Ammo = NewAmmo;
+	// Execute OnAmmoChangedEvent delegate that calls back UCharacterEquipmentComponent::OnCurrentWeaponUpdatedAmmo(int32 Ammo)
+	if (OnAmmoChangedEvent.IsBound())
+	{
+		OnAmmoChangedEvent.Broadcast(Ammo);
+	}
+}
+
+bool ARangeWeapon::CanShoot() const
+{
+	return Ammo>0;
+}
+
+EAmunitionType ARangeWeapon::GetAmmoType() const
+{
+	return AmmoType;
+}
+
+void ARangeWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+	SetAmmo(MaxAmmo);
 }
 
 float ARangeWeapon::GetCurrentBulletSpreadAngle() const

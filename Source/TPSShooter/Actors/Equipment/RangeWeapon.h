@@ -6,6 +6,9 @@
 #include "Actors/Equipment/EquipableItems.h"
 #include "RangeWeapon.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32);
+DECLARE_MULTICAST_DELEGATE(FOnReloadComplete);
+
 UENUM(BlueprintType)
 enum class EWeaponFireMode : uint8
 {
@@ -31,12 +34,28 @@ public:
 	void StartAim();
 	void StopAim();
 
+	void StartReload();
+	void EndReload(bool bIsSuccess);
+
 	FTransform GetForegripTransform() const;
 
 	inline float GetAimFOV() const { return AimFOV; }
 	inline float GetAimMovementMaxSpeed() const { return AimMovementMaxSpeed; }
 
+	// Function related to ammunition
+	inline int32 GetAmmo() const { return Ammo; }
+	inline int32 GetMaxAmmo() const { return MaxAmmo; }
+	void SetAmmo(int32 NewAmmo);
+	bool CanShoot()const;
+
+	EAmunitionType GetAmmoType() const;
+
+	FOnAmmoChanged OnAmmoChangedEvent;
+	FOnReloadComplete OnReloadCompleteEvent;
+
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// Weapon's visual representation
 	class USkeletalMeshComponent* WeaponMesh;
@@ -50,8 +69,14 @@ protected:
 	UAnimMontage* WeaponFireMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	UAnimMontage* WeaponReloadMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
 	// Animation of character designed for particular weapon, is stored in Weapon class and is played from pointer to character
 	UAnimMontage* CharacterFireMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	UAnimMontage* CharacterReloadMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters", meta = (ClampMin = 1.0f, UIMin = 1.0f))
 	// Rate of fire in rounds per minute
@@ -75,12 +100,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Aiming", meta = (ClampMin = 0.0f, UIMin = 0.0f, ClampMax = 120.0f, UIMax = 120.0f))
 	// Field of view of character is always less while aiming
 	float AimFOV = 60.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo", meta = (ClampMin = 1, UIMin = 1))
+	EAmunitionType AmmoType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo", meta = (ClampMin = 1, UIMin = 1))
+	int32 MaxAmmo = 30;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
+	bool bAutoReload = true;
+
+	
 	
 private:
+
+	int32 Ammo = 0;
 	float GetCurrentBulletSpreadAngle() const;
-
-
 	bool bIsAiming;
+	bool bIsReloading = false;
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
 	float GetShotTimerInterval();
 	void MakeShot();
@@ -89,4 +126,5 @@ private:
 
 
 	FTimerHandle ShotTimer;
+	FTimerHandle ReloadTimer;
 };
