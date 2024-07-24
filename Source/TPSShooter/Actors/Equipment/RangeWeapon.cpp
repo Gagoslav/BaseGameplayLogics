@@ -16,6 +16,8 @@ ARangeWeapon::ARangeWeapon()
 	WeaponMuzle = CreateDefaultSubobject<UWeaponFusilComponent>(TEXT("WeaponMuzzle"));
 	WeaponMuzle->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
+	EquippedSocketName = SocketCharacterWeapon;
+
 }
 
 void ARangeWeapon::StartFire()
@@ -70,6 +72,14 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 	{
 		return;
 	}
+	if (!bIsSuccess)
+	{
+		checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
+		ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
+		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+		StopAnimMontage(WeaponReloadMontage);
+
+	}
 
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
 
@@ -89,7 +99,7 @@ void ARangeWeapon::MakeShot()
 
 	if (!CanShoot())
 	{
-		if (Ammo == 0 && bAutoReload)
+		if (CurrentAmmo == 0 && bAutoReload)
 		{
 			CharacterOwner->Reload();
 		}
@@ -119,7 +129,7 @@ void ARangeWeapon::MakeShot()
 	ViewDirection += GetBulletSpreadOffset(FMath::RandRange(0.0f, GetCurrentBulletSpreadAngle()), PlayerViewRotation);
 
 	// Decrease bullets number
-	SetAmmo(Ammo-1);
+	SetAmmo(CurrentAmmo-1);
 	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller); // make a shot
 }
 
@@ -137,6 +147,13 @@ FVector ARangeWeapon::GetBulletSpreadOffset(float Angle, FRotator ShotRotation) 
 
 }
 
+float ARangeWeapon::GetCurrentBulletSpreadAngle() const
+{
+	// As we have different spreads of firing depending if the character is aiming or just shooting
+	float AngleInDegrees = bIsAiming ? AimSpreadAngle : SpreadAngle;
+	return FMath::DegreesToRadians(AngleInDegrees);
+}
+
 FTransform ARangeWeapon::GetForegripTransform() const
 {
 	return WeaponMesh->GetSocketTransform(SocketForegrip);
@@ -144,17 +161,17 @@ FTransform ARangeWeapon::GetForegripTransform() const
 
 void ARangeWeapon::SetAmmo(int32 NewAmmo)
 {
-	Ammo = NewAmmo;
+	CurrentAmmo = NewAmmo;
 	// Execute OnAmmoChangedEvent delegate that calls back UCharacterEquipmentComponent::OnCurrentWeaponUpdatedAmmo(int32 Ammo)
 	if (OnAmmoChangedEvent.IsBound())
 	{
-		OnAmmoChangedEvent.Broadcast(Ammo);
+		OnAmmoChangedEvent.Broadcast(CurrentAmmo); // execute bound functions
 	}
 }
 
 bool ARangeWeapon::CanShoot() const
 {
-	return Ammo>0;
+	return CurrentAmmo>0;
 }
 
 EAmunitionType ARangeWeapon::GetAmmoType() const
@@ -168,12 +185,7 @@ void ARangeWeapon::BeginPlay()
 	SetAmmo(MaxAmmo);
 }
 
-float ARangeWeapon::GetCurrentBulletSpreadAngle() const
-{
-	// As we have different spreads of firing depending if the character is aiming or just shooting
-	float AngleInDegrees = bIsAiming ? AimSpreadAngle : SpreadAngle;
-	return FMath::DegreesToRadians(AngleInDegrees);
-}
+
 
 float ARangeWeapon::PlayAnimMontage(UAnimMontage* AnimMontage)
 {
@@ -188,7 +200,17 @@ float ARangeWeapon::PlayAnimMontage(UAnimMontage* AnimMontage)
 	return Result;
 }
 
+void ARangeWeapon::StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime)
+{
+	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+	if (IsValid(WeaponAnimInstance))
+	{
+		WeaponAnimInstance->Montage_Stop(BlendOutTime, AnimMontage);
+	}
+}
+
 float ARangeWeapon::GetShotTimerInterval()
 {
 	return 60.0f / RateOfFire;
 }
+

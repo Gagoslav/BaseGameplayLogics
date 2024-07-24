@@ -116,7 +116,10 @@ public:
 	void StartAiming();
 	void StopAiming();
 
-	void Reload() const;
+	void Reload();
+
+	void NextItem();
+	void PreviousItem();
 
 	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
 

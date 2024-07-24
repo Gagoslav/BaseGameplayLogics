@@ -43,7 +43,7 @@ public:
 	inline float GetAimMovementMaxSpeed() const { return AimMovementMaxSpeed; }
 
 	// Function related to ammunition
-	inline int32 GetAmmo() const { return Ammo; }
+	inline int32 GetAmmo() const { return CurrentAmmo; }
 	inline int32 GetMaxAmmo() const { return MaxAmmo; }
 	void SetAmmo(int32 NewAmmo);
 	bool CanShoot()const;
@@ -114,11 +114,12 @@ protected:
 	
 private:
 
-	int32 Ammo = 0;
+	int32 CurrentAmmo = 0;
 	float GetCurrentBulletSpreadAngle() const;
 	bool bIsAiming;
 	bool bIsReloading = false;
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
+	void StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime = 0.0f);
 	float GetShotTimerInterval();
 	void MakeShot();
 

@@ -303,6 +303,10 @@ void ATPSBaseCharacter::Landed(const FHitResult& Hit)
 
 void ATPSBaseCharacter::StartFire()
 {
+	if (CharacterEquipmentComponent->GetIsEquipping())
+	{
+		return;
+	}
 	ARangeWeapon* CurrentWeapon = CharacterEquipmentComponent->GetCurrentWeapon();
 	if (IsValid(CurrentWeapon))
 	{
@@ -349,12 +353,22 @@ void ATPSBaseCharacter::StopAiming()
 	OnStopAiming();
 }
 
-void ATPSBaseCharacter::Reload() const
+void ATPSBaseCharacter::Reload()
 {
 	if (IsValid(GetCharacterEquipmentComponent()->GetCurrentWeapon()))
 	{
 		CharacterEquipmentComponent->ReloadCurrentWeapon();
 	}
+}
+
+void ATPSBaseCharacter::NextItem()
+{
+	CharacterEquipmentComponent->EquipNextItem();
+}
+
+void ATPSBaseCharacter::PreviousItem()
+{
+	CharacterEquipmentComponent->EquipPreviousItem();
 }
 
 void ATPSBaseCharacter::OnStartAiming_Implementation()

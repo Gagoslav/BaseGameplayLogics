@@ -38,6 +38,15 @@ enum class ECustomMovementMode : uint8
 	CMOVE_Max UMETA(Hidden)
 };
 
+UENUM(BlueprintType)
+enum class EEquipmentSlots :uint8
+{
+	None,
+	SideArm,
+	PrimaryWeapon,
+	MAX UMETA(hidden)
+};
+
 // Set Collision profile names to get them when we want to change collision profile through code
 
 const FName CollisionProfilePawn = FName("Pawn");

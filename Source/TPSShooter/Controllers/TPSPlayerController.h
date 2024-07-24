@@ -59,6 +59,8 @@ private:
 	void StopAiming();
 
 	void Reload();
+	void NextItem();
+	void PreviousItem();
 private:
 	void CreateAndInitializeWidgets();
 	UPlayerHUDWidget* PlayerHUDWidget = nullptr;

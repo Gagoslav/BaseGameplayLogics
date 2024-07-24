@@ -9,6 +9,8 @@
 
 // Just a base abstract class designed to be inherit from by all equipable objects
 
+class UAnimMontage;
+
 UCLASS(Abstract, NotBlueprintable)
 class TPSSHOOTER_API AEquipableItems : public AActor
 {
@@ -16,13 +18,26 @@ class TPSSHOOTER_API AEquipableItems : public AActor
 
 public:
 	EEquipedItemType GetEquipedItemType() const { return EquipedItemType; }
-protected:
 
+	inline FName GetUnEquippedSocketName() const { return UnEquippedSocketName; }
+	inline FName GetEquippedSocketName() const{ return EquippedSocketName; }
+
+	inline UAnimMontage* GetCharacterAnimMontage() const { return CharacterEquipAnimMontage; }
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
 	// Each equipable item has its type that should be set in editor
 	EEquipedItemType EquipedItemType;
 
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	FName UnEquippedSocketName = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	FName EquippedSocketName = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	UAnimMontage* CharacterEquipAnimMontage;
 
 };

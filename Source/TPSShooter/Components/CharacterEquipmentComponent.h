@@ -9,6 +9,7 @@
 
 
 typedef TArray <int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
+typedef TArray <class AEquipableItems*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 
 class ARangeWeapon;
 enum class EEquipedItemType : uint8;
@@ -28,38 +29,66 @@ public:
 
 	void ReloadCurrentWeapon();
 
+	bool CanReload(int32 AmmoNum);
+
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
+
+	// Method responsible for equiping of selected item/weapon on character's hand
+	void EquipItemInSlot(EEquipmentSlots Slot);
+
+	void AttachCurrentItemToEquippedSocket();
+
+	void UnEquipCurrentItem();
+
+	// Methods that switch weapons
+	void EquipNextItem();
+	void EquipPreviousItem();
+	
+	inline bool GetIsEquipping() const { return bIsEquipping; }
 
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
-	// Pointer to any class that is derived from ARangeWeapon!
-	TSubclassOf<ARangeWeapon> SideArmClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TMap<EAmunitionType, int32> MaxAmunitionAmount;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	TMap<EEquipmentSlots, TSubclassOf<class AEquipableItems>> ItemsLoadout;
+
 private:
 
+	void CreateLoadOut();
+	
 	TAmunitionArray AmunitionArray;
+	TItemsArray ItemsArray;
 
 	UFUNCTION()
 	void OnWeaponReloadComplete();
 
-	void CreateLoadOut();
-
 	UFUNCTION()
 	// UFunction called back from ARangeWeapon by delegate 
 	void OnCurrentWeaponUpdatedAmmo(int32 Ammo);
+
+	uint32 NextItemsArraySlotIndex(uint32 CurrentSlotIndex);
+	uint32 PreviousItemsArraySlotIndex(uint32 CurrentSlotIndex);
+	void EquipAnimationFinished();
+
+	bool bIsEquipping = false;
+	
+	FDelegateHandle OnCurrentWeaponAmmoChangedHandle;
+	FDelegateHandle OnCurrentWeaponReloadedHandle;
 
 	int32 GetAvailableAmunitionForCurrentWeapon();
 
 	// Private pointer to weapon that will be initialized by spawning an object of SideArmClass
 	ARangeWeapon* CurrentEquippedWeapon;
 
+	EEquipmentSlots CurrentEquippedSlot;
+	AEquipableItems* CurrentEquippedItem;
+
 	// Cached character owner of this component
 	TWeakObjectPtr<class ATPSBaseCharacter> InBaseCharacter;
 
-
+	FTimerHandle EquipTimer;
 		
 };

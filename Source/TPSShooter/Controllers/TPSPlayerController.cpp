@@ -46,7 +46,8 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ATPSPlayerController::StartAiming);
 	InputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ATPSPlayerController::StopAiming);
 	InputComponent->BindAction("Reload", EInputEvent::IE_Pressed, this, &ATPSPlayerController::Reload);
-
+	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::NextItem);
+	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::PreviousItem);
 }
 
 
@@ -204,6 +205,22 @@ void ATPSPlayerController::Reload()
 	if (InBaseCharacter.IsValid())
 	{
 		InBaseCharacter->Reload();
+	}
+}
+
+void ATPSPlayerController::NextItem()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->NextItem();
+	}
+}
+
+void ATPSPlayerController::PreviousItem()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->PreviousItem();
 	}
 }
 
