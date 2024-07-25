@@ -123,7 +123,7 @@ private:
 	float GetShotTimerInterval();
 	void MakeShot();
 
-	FVector GetBulletSpreadOffset (float Angle, FRotator ShotRotation) const;
+	
 
 
 	FTimerHandle ShotTimer;

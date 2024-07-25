@@ -34,11 +34,14 @@ class TPSSHOOTER_API UWeaponFusilComponent : public USceneComponent
 
 public:	
 	// Function that will implement firing action
-	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller);
+	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Muzle attributes")
 	float FiringRange = 5000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes", meta = (ClampMin=1, UIMin = 1))
+	int32 BulletsPerShot = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Damage")
 	float DamageAmount = 20.0f;
@@ -48,9 +51,12 @@ protected:
 	UNiagaraSystem* MuzzleFlashFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | VFX")
-	// Particle system for firing
+	// Particle system for bullet trace
 	UNiagaraSystem* TraceFX;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Decals")
 	FDecalInfo DefaultDecalInfo;
+
+private:
+	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
 };
