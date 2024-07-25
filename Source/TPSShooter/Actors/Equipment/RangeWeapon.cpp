@@ -49,10 +49,12 @@ void ARangeWeapon::StopAim()
 
 void ARangeWeapon::StartReload()
 {
+	// Get an owner character
 	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
 	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
 	bIsReloading = true;
 
+	// If the corresponding montages are set then play them and after they are complete callback EndReload(true)
 	if (IsValid(CharacterReloadMontage))
 	{
 		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
@@ -68,10 +70,12 @@ void ARangeWeapon::StartReload()
 
 void ARangeWeapon::EndReload(bool bIsSuccess)
 {
+	// Make sure we were reloading
 	if (!bIsReloading)
 	{
 		return;
 	}
+	// If reload was unsuccessfull then stop playing montage
 	if (!bIsSuccess)
 	{
 		checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
@@ -202,6 +206,7 @@ float ARangeWeapon::PlayAnimMontage(UAnimMontage* AnimMontage)
 
 void ARangeWeapon::StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime)
 {
+	// Wrapper function designed to run the Montage_Stop method of anim instance if we have one
 	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
 	if (IsValid(WeaponAnimInstance))
 	{

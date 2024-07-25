@@ -32,9 +32,11 @@ protected:
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	// Socket is set at position on the skeletal mesh where we need to just store an item
 	FName UnEquippedSocketName = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
+	// Socket is set at position on the skeletal mesh where we need to equip an item
 	FName EquippedSocketName = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
