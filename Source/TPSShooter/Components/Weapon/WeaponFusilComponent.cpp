@@ -13,6 +13,7 @@
 
 void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle)
 {
+	// How many shots per one fire action we do
 	for (int i = 0; i < BulletsPerShot; i++)
 	{
 		// Add spread offset from screen's sentral point
@@ -57,8 +58,14 @@ void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, ACont
 			AActor* HitActor = ShotResult.GetActor();
 			if (IsValid(HitActor))
 			{
+				// Special type of UDamageEvent
+				FPointDamageEvent DamageEvent;
+				DamageEvent.HitInfo = ShotResult;
+				DamageEvent.ShotDirection = ShotDirection;
+				DamageEvent.DamageTypeClass = DamageTypeClass;
+
 				// Apply damage
-				HitActor->TakeDamage(DamageAmount, FDamageEvent{}, Controller, GetOwner());
+				HitActor->TakeDamage(DamageAmount, DamageEvent, Controller, GetOwner());
 			}
 
 			UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DefaultDecalInfo.DecalMaterial, DefaultDecalInfo.DecalSize, ShotResult.ImpactPoint, ShotResult.ImpactNormal.ToOrientationRotator());

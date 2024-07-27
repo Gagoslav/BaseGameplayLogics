@@ -16,6 +16,13 @@ enum class EWeaponFireMode : uint8
 	FullAutomate
 };
 
+UENUM(BlueprintType)
+enum class EReloadType : uint8
+{
+	FullClip,
+	ByBullet // For shotgun
+};
+
 
 class UAnimMontage;
 
@@ -72,6 +79,11 @@ protected:
 	UAnimMontage* WeaponReloadMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
+	// FullClip reload type adds ammo only when the whole animation is successfully played
+	// ByBullet reload type requires section "EndReload" in character reload animation 
+	EReloadType ReloadType = EReloadType::FullClip;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
 	// Animation of character designed for particular weapon, is stored in Weapon class and is played from pointer to character
 	UAnimMontage* CharacterFireMontage;
 
@@ -116,14 +128,17 @@ private:
 
 	int32 CurrentAmmo = 0;
 	float GetCurrentBulletSpreadAngle() const;
-	bool bIsAiming;
+
+	bool bIsAiming = false;
 	bool bIsReloading = false;
+	bool bIsFiring = false;
+
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
 	void StopAnimMontage(UAnimMontage* AnimMontage, float BlendOutTime = 0.0f);
 	float GetShotTimerInterval();
 	void MakeShot();
 
-	
+	void OnShotTimerElapsed();
 
 
 	FTimerHandle ShotTimer;

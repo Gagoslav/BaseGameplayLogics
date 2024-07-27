@@ -4,15 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AnimNotify_EnableRagdoll.generated.h"
+#include "AnimNotify_ReloadAmmo.generated.h"
 
 /**
- *  This Anim notify just should set new CollisionProfileName and physic simulation
+ * 
  */
 UCLASS()
-class TPSSHOOTER_API UAnimNotify_EnableRagdoll : public UAnimNotify
+class TPSSHOOTER_API UAnimNotify_ReloadAmmo : public UAnimNotify
 {
 	GENERATED_BODY()
+
 public:
+
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ammo", meta = (ClampMin = 1, UIMin = 1))
+	int32 NumberOfAmmo = 1;
+
+	
 };

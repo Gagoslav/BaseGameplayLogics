@@ -22,19 +22,22 @@ ARangeWeapon::ARangeWeapon()
 
 void ARangeWeapon::StartFire()
 {
-	MakeShot();
-	// If the fire mode of our current weapon is full automate we will fire automatic 
-	if (WeaponFireMode == EWeaponFireMode::FullAutomate)
+	// If our timer manager for shooting is active then make early return
+	if (GetWorld()->GetTimerManager().IsTimerActive(ShotTimer))
 	{
-		GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
-		GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeapon::MakeShot, GetShotTimerInterval(), true);
+		return;
 	}
-	
+
+	bIsFiring = true;
+	MakeShot();
+
+
 }
 
 void ARangeWeapon::StopFire()
 {
-	GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+	bIsFiring = false;
+	//GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
 }
 
 void ARangeWeapon::StartAim()
@@ -46,6 +49,7 @@ void ARangeWeapon::StopAim()
 {
 	bIsAiming = false;
 }
+
 
 void ARangeWeapon::StartReload()
 {
@@ -59,7 +63,11 @@ void ARangeWeapon::StartReload()
 	{
 		float MontageDuration = CharacterOwner->PlayAnimMontage(CharacterReloadMontage);
 		PlayAnimMontage(WeaponReloadMontage);
-		GetWorld()->GetTimerManager().SetTimer(ReloadTimer,  [this](){EndReload(true); }, MontageDuration, false);
+		if (ReloadType == EReloadType::FullClip)
+		{
+			GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() {EndReload(true); }, MontageDuration, false);
+		}
+
 
 	}
 	else
@@ -85,11 +93,27 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 
 	}
 
+	if (ReloadType == EReloadType::ByBullet)
+	{
+		ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());;
+		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+		if (IsValid(CharacterAnimInstance))
+		{
+			CharacterAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, CharacterReloadMontage);
+		}
+		UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+		if (IsValid(WeaponAnimInstance))
+		{
+			WeaponAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, WeaponReloadMontage);
+		}
+	}
+
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
 
 	bIsReloading = false;
 	if (OnReloadCompleteEvent.IsBound() && bIsSuccess)
 	{
+		// Delegate function is added in UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		OnReloadCompleteEvent.Broadcast();
 	}
 }
@@ -131,8 +155,37 @@ void ARangeWeapon::MakeShot()
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 
 	// Decrease bullets number
-	SetAmmo(CurrentAmmo-1);
-	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller,GetCurrentBulletSpreadAngle()); // make a shot
+	SetAmmo(CurrentAmmo - 1);
+	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller, GetCurrentBulletSpreadAngle()); // make a shot
+
+	// If the fire mode of our current weapon is full automate we will fire automatic 
+
+	GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARangeWeapon::OnShotTimerElapsed, GetShotTimerInterval(), false);
+
+}
+
+void ARangeWeapon::OnShotTimerElapsed()
+{
+	if (!bIsFiring)
+	{
+		return;
+	}
+
+	switch (WeaponFireMode)
+	{
+		case EWeaponFireMode::Single:
+		{
+			StopFire();
+			break;
+		}
+		case EWeaponFireMode::FullAutomate:
+		{
+			MakeShot();
+			break;
+		}
+
+	}
+
 }
 
 float ARangeWeapon::GetCurrentBulletSpreadAngle() const
@@ -159,7 +212,7 @@ void ARangeWeapon::SetAmmo(int32 NewAmmo)
 
 bool ARangeWeapon::CanShoot() const
 {
-	return CurrentAmmo>0;
+	return CurrentAmmo > 0;
 }
 
 EAmunitionType ARangeWeapon::GetAmmoType() const

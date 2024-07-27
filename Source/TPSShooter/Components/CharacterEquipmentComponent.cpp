@@ -51,6 +51,8 @@ void UCharacterEquipmentComponent::ReloadCurrentWeapon()
 
 }
 
+
+
 bool UCharacterEquipmentComponent::CanReload(int32 AmmoNum)
 {
 	return AmmoNum > 0 && !bIsEquipping;
@@ -159,13 +161,35 @@ void UCharacterEquipmentComponent::OnWeaponReloadComplete()
 {
 	// Callback
 
+	ReloadAmmoInCurrentWeapon();
+}
+
+void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo, bool bCheckIsFull)
+{
 	int32 AvailableAmunition = GetAvailableAmunitionForCurrentWeapon();
 	int32 CurrentAmmo = CurrentEquippedWeapon->GetAmmo();
-	int32 AmmoToReload = CurrentEquippedWeapon->GetMaxAmmo() - CurrentAmmo; // how much shoots we have already done
-	int32 ReloadedAmmo = FMath::Min(AvailableAmunition, AmmoToReload); // When we have last magazine and have more shot ammo then add the remaining ammo
+	int32 AmmoToReload = CurrentEquippedWeapon->GetMaxAmmo() - CurrentAmmo;// how much shoots we have already done
+	int32 ReloadedAmmo =FMath::Min(AvailableAmunition, AmmoToReload);  // When we have last magazine and have more shot ammo then add the remaining ammo // Get minimal number as bullets passed to weapon
+	
+	if (NumberOfAmmo > 0)
+	{
+		ReloadedAmmo = FMath::Min(ReloadedAmmo, NumberOfAmmo);
+	}
 
 	AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()] -= ReloadedAmmo; // Reduce shot ammo from overall ammo number for particular weapon
 	CurrentEquippedWeapon->SetAmmo(ReloadedAmmo + CurrentAmmo); // to fullfill the magazine
+
+	if (bCheckIsFull)
+	{
+		AvailableAmunition -= AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()];
+		bool bIsFullyReloaded = CurrentEquippedWeapon->GetAmmo() == CurrentEquippedWeapon->GetMaxAmmo();
+		if (AvailableAmunition == 0 || bIsFullyReloaded)
+		{
+			CurrentEquippedWeapon->EndReload(true);
+		}
+	}
+
+	
 }
 
 void UCharacterEquipmentComponent::CreateLoadOut()

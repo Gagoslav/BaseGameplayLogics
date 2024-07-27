@@ -65,3 +65,5 @@ const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");
 const FName DebugCategoryRangeWeapon = FName("RangeWeapon");
 
 const FName FXParamTraceEnd = FName("TraceEnd");
+
+const FName SectionMontageReloadEnd = FName("EndReload");

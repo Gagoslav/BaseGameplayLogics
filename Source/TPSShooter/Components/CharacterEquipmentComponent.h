@@ -29,6 +29,8 @@ public:
 
 	void ReloadCurrentWeapon();
 
+	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo = 0, bool bCheckIsFull = false);
+
 	bool CanReload(int32 AmmoNum);
 
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;

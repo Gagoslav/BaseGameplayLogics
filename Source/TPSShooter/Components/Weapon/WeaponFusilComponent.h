@@ -46,6 +46,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Damage")
 	float DamageAmount = 20.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Damage")
+	TSubclassOf<class UDamageType> DamageTypeClass;
+
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | VFX")
 	// Particle system for firing
 	UNiagaraSystem* MuzzleFlashFX;
