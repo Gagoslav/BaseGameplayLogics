@@ -64,7 +64,7 @@ void UWeaponFusilComponent::Shot(FVector ShotStart, FVector ShotDirection, ACont
 				DamageEvent.ShotDirection = ShotDirection;
 				DamageEvent.DamageTypeClass = DamageTypeClass;
 
-				// Apply damage (from FHitResult)
+				// Apply damage
 				HitActor->TakeDamage(DamageAmount, DamageEvent, Controller, GetOwner());
 			}
 
