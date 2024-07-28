@@ -67,7 +67,7 @@ void ARangeWeapon::StartReload()
 		{
 			GetWorld()->GetTimerManager().SetTimer(ReloadTimer, [this]() {EndReload(true); }, MontageDuration, false);
 		}
-
+		// In the case of ByBullte reload we will use AnimMontages devided by sections and use AnimNotifies to implement reload action
 
 	}
 	else
@@ -93,6 +93,7 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 
 	}
 
+	// Case for a shotgun (reload bullets one by one)
 	if (ReloadType == EReloadType::ByBullet)
 	{
 		ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());;

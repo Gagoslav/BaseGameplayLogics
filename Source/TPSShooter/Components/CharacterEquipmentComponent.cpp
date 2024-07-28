@@ -173,6 +173,7 @@ void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo,
 	
 	if (NumberOfAmmo > 0)
 	{
+		// This case is for shotgun when we need to reload bullets one by one
 		ReloadedAmmo = FMath::Min(ReloadedAmmo, NumberOfAmmo);
 	}
 
@@ -181,8 +182,9 @@ void UCharacterEquipmentComponent::ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo,
 
 	if (bCheckIsFull)
 	{
-		AvailableAmunition -= AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()];
-		bool bIsFullyReloaded = CurrentEquippedWeapon->GetAmmo() == CurrentEquippedWeapon->GetMaxAmmo();
+		
+		AvailableAmunition -= AmunitionArray[(uint32)CurrentEquippedWeapon->GetAmmoType()]; // Just check how many bullets have been reduced from total ammo amount for this weapon
+		bool bIsFullyReloaded = CurrentEquippedWeapon->GetAmmo() == CurrentEquippedWeapon->GetMaxAmmo(); // If our magazine is full and there is no need to reload
 		if (AvailableAmunition == 0 || bIsFullyReloaded)
 		{
 			CurrentEquippedWeapon->EndReload(true);
@@ -197,7 +199,7 @@ void UCharacterEquipmentComponent::CreateLoadOut()
 	AmunitionArray.AddZeroed((uint32)EAmunitionType::MAX);
 	for (const TPair<EAmunitionType, int32>& AmmoPair : MaxAmunitionAmount)
 	{
-		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0);
+		AmunitionArray[(uint32)AmmoPair.Key] = FMath::Max(AmmoPair.Value, 0); // ensure there won't be any negative values set
 	}
 
 	ItemsArray.AddZeroed((uint32)EEquipmentSlots::MAX);
