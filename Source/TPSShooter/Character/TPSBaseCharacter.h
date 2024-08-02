@@ -121,6 +121,8 @@ public:
 	void NextItem();
 	void PreviousItem();
 
+	void EquipPrimaryItem();
+
 	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")

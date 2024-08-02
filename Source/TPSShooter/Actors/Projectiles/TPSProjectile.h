@@ -24,6 +24,9 @@ protected:
 	class USphereComponent* CollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// Special class for setting the movement settings of projectile
 	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+	virtual void OnProjectileLaunched();
 
 };

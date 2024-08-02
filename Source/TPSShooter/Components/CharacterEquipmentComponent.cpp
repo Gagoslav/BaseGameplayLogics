@@ -5,7 +5,7 @@
 #include "Character/TPSBaseCharacter.h"
 #include "Actors/Equipment/RangeWeapon.h"
 #include "BaseData/BaseEnums.h"
-
+#include "Actors/Equipment/Throwables/ThrowableItem.h"
 
 
 
@@ -41,12 +41,12 @@ void UCharacterEquipmentComponent::ReloadCurrentWeapon()
 	int32 AvailableAmunition = GetAvailableAmunitionForCurrentWeapon();
 
 	// If we don't have any amunition for a particular weapon at all then make return
-	
+
 	if (!CanReload(AvailableAmunition))
 	{
 		return;
 	}
-	
+
 	CurrentEquippedWeapon->StartReload();
 
 }
@@ -61,6 +61,7 @@ bool UCharacterEquipmentComponent::CanReload(int32 AmmoNum)
 
 void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 {
+	
 	if (bIsEquipping)
 	{
 		return;
@@ -73,6 +74,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	// Then we get/select the necessary item from the array of character's items
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeapon>(CurrentEquippedItem);
+	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
 
 	// And here we equip the selected items to character's arms if this item is valid
 	if (IsValid(CurrentEquippedItem))
@@ -87,9 +89,10 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		else
 		{
 			AttachCurrentItemToEquippedSocket();
-			CurrentEquippedSlot = Slot;
 		}
-		
+
+		CurrentEquippedSlot = Slot;
+		CurrentEquippedItem->Equip();
 
 	}
 
@@ -107,7 +110,21 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 
 void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
 {
-	CurrentEquippedItem->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, CurrentEquippedItem->GetEquippedSocketName());
+	if (IsValid(CurrentEquippedItem))
+	{
+		CurrentEquippedItem->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, CurrentEquippedItem->GetEquippedSocketName());
+	}
+	
+}
+
+void UCharacterEquipmentComponent::LaunchCurrentThrowableItem()
+{
+	if (IsValid(CurrentThrowableItem))
+	{
+		CurrentThrowableItem->Throw();
+		bIsEquipping = false;
+		EquipItemInSlot(PreviousEquippedSlot);
+	}
 }
 
 void UCharacterEquipmentComponent::UnEquipCurrentItem()
@@ -116,6 +133,7 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 	if (IsValid(CurrentEquippedItem))
 	{
 		CurrentEquippedItem->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, CurrentEquippedItem->GetUnEquippedSocketName());
+		CurrentEquippedItem->UnEquip();
 	}
 
 	if (IsValid(CurrentEquippedWeapon))
@@ -126,6 +144,7 @@ void UCharacterEquipmentComponent::UnEquipCurrentItem()
 		CurrentEquippedWeapon->OnAmmoChangedEvent.Remove(OnCurrentWeaponAmmoChangedHandle);
 		CurrentEquippedWeapon->OnReloadCompleteEvent.Remove(OnCurrentWeaponReloadedHandle);
 	}
+	PreviousEquippedSlot = CurrentEquippedSlot;
 	CurrentEquippedSlot = EEquipmentSlots::None;
 }
 
@@ -133,7 +152,7 @@ void UCharacterEquipmentComponent::EquipNextItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 NextSlotIndex = NextItemsArraySlotIndex(CurrentSlotIndex); // ++
-	while (CurrentSlotIndex != NextSlotIndex && !IsValid(ItemsArray[NextSlotIndex])) // this loop help us to  prevent empty arms selection
+	while (CurrentSlotIndex != NextSlotIndex && IgnoreSlotsWhileSwitching.Contains((EEquipmentSlots)NextSlotIndex) && !IsValid(ItemsArray[NextSlotIndex])) // this loop help us to  prevent empty arms selection
 	{
 		NextSlotIndex = NextItemsArraySlotIndex(NextSlotIndex);
 	}
@@ -147,7 +166,7 @@ void UCharacterEquipmentComponent::EquipPreviousItem()
 {
 	uint32 CurrentSlotIndex = (uint32)CurrentEquippedSlot;
 	uint32 PreviousSlotIndex = PreviousItemsArraySlotIndex(CurrentSlotIndex);
-	while (CurrentSlotIndex != PreviousSlotIndex && !IsValid(ItemsArray[PreviousSlotIndex])) // this loop help us to  prevent empty arms selection
+	while (CurrentSlotIndex != PreviousSlotIndex && IgnoreSlotsWhileSwitching.Contains((EEquipmentSlots)PreviousSlotIndex) && !IsValid(ItemsArray[PreviousSlotIndex])) // this loop help us to  prevent empty arms selection
 	{
 		PreviousSlotIndex = PreviousItemsArraySlotIndex(PreviousSlotIndex);
 	}
@@ -212,6 +231,7 @@ void UCharacterEquipmentComponent::CreateLoadOut()
 		AEquipableItems* Item = GetWorld()->SpawnActor<AEquipableItems>(ItemPair.Value);
 		Item->AttachToComponent(InBaseCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, Item->GetUnEquippedSocketName());
 		Item->SetOwner(InBaseCharacter.Get());
+		Item->UnEquip();
 		ItemsArray[(uint32)ItemPair.Key] = Item;
 	}
 

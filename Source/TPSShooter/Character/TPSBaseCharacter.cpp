@@ -371,6 +371,11 @@ void ATPSBaseCharacter::PreviousItem()
 	CharacterEquipmentComponent->EquipPreviousItem();
 }
 
+void ATPSBaseCharacter::EquipPrimaryItem()
+{
+	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
+}
+
 void ATPSBaseCharacter::OnStartAiming_Implementation()
 {
 	OnStartAimingInternal();

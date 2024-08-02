@@ -8,9 +8,11 @@
 #include "CharacterEquipmentComponent.generated.h"
 
 
+
 typedef TArray <int32, TInlineAllocator<(uint32)EAmunitionType::MAX>> TAmunitionArray;
 typedef TArray <class AEquipableItems*, TInlineAllocator<(uint32)EEquipmentSlots::MAX>> TItemsArray;
 
+class AThrowableItem;
 class ARangeWeapon;
 enum class EEquipedItemType : uint8;
 
@@ -29,7 +31,7 @@ public:
 
 	void ReloadCurrentWeapon();
 
-	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo = 0, bool bCheckIsFull = false);
+	void ReloadAmmoInCurrentWeapon(int32 NumberOfAmmo = 0, bool bCheckIsFull = false); // For shotgun
 
 	bool CanReload(int32 AmmoNum);
 
@@ -38,7 +40,9 @@ public:
 	// Method responsible for equiping of selected item/weapon on character's hand
 	void EquipItemInSlot(EEquipmentSlots Slot);
 
-	void AttachCurrentItemToEquippedSocket();
+	void AttachCurrentItemToEquippedSocket(); 
+
+	void LaunchCurrentThrowableItem();
 
 	void UnEquipCurrentItem();
 
@@ -56,6 +60,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TMap<EEquipmentSlots, TSubclassOf<class AEquipableItems>> ItemsLoadout;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
+	TSet<EEquipmentSlots> IgnoreSlotsWhileSwitching;
 
 private:
 
@@ -85,8 +92,11 @@ private:
 	// Private pointer to weapon that will be initialized by spawning an object of SideArmClass
 	ARangeWeapon* CurrentEquippedWeapon;
 
+	EEquipmentSlots PreviousEquippedSlot;
 	EEquipmentSlots CurrentEquippedSlot;
+
 	AEquipableItems* CurrentEquippedItem;
+	AThrowableItem* CurrentThrowableItem;
 
 	// Cached character owner of this component
 	TWeakObjectPtr<class ATPSBaseCharacter> InBaseCharacter;

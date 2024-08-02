@@ -61,6 +61,7 @@ private:
 	void Reload();
 	void NextItem();
 	void PreviousItem();
+	void EquipPrimaryItem();
 private:
 	void CreateAndInitializeWidgets();
 	UPlayerHUDWidget* PlayerHUDWidget = nullptr;

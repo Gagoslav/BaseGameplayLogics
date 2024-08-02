@@ -48,6 +48,7 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Reload", EInputEvent::IE_Pressed, this, &ATPSPlayerController::Reload);
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::PreviousItem);
+	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::EquipPrimaryItem);
 }
 
 
@@ -221,6 +222,14 @@ void ATPSPlayerController::PreviousItem()
 	if (InBaseCharacter.IsValid())
 	{
 		InBaseCharacter->PreviousItem();
+	}
+}
+
+void ATPSPlayerController::EquipPrimaryItem()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->EquipPrimaryItem();
 	}
 }
 

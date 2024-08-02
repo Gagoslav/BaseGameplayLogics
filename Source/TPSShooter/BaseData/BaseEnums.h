@@ -17,7 +17,8 @@ enum class EEquipedItemType : uint8
 {
 	None,
 	Pistol,
-	AssaultRifle
+	AssaultRifle,
+	Throwable
 };
 
 UENUM(BlueprintType)
@@ -46,6 +47,7 @@ enum class EEquipmentSlots :uint8
 	SideArm,
 	PrimaryWeapon,
 	SecondaryWeapon,
+	PrimaryItemSlot,
 	MAX UMETA(hidden)
 };
 
@@ -59,6 +61,7 @@ const FName SocketFPCamera = FName("CameraSocket");
 const FName SocketCharacterWeapon = FName("SocketWeapon");
 const FName SocketWeaponMuzzle = FName("SocketMuzzle");
 const FName SocketForegrip = FName("SocketForegrip");
+const FName SocketThrowableItem = FName("SocketThrowable");
 
 const FName DebugCategoryLedgeDetection = FName("LedgeDetection");
 const FName DebugCategoryCharacterAttributes = FName("CharacterAttributes");

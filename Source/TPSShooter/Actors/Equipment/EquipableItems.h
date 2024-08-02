@@ -9,6 +9,7 @@
 
 // Just a base abstract class designed to be inherit from by all equipable objects
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
 class UAnimMontage;
 
 UCLASS(Abstract, NotBlueprintable)
@@ -22,9 +23,15 @@ public:
 	inline FName GetUnEquippedSocketName() const { return UnEquippedSocketName; }
 	inline FName GetEquippedSocketName() const{ return EquippedSocketName; }
 
+	virtual void Equip();
+	virtual void UnEquip();
+
 	inline UAnimMontage* GetCharacterAnimMontage() const { return CharacterEquipAnimMontage; }
 
 protected:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnEquipmentStateChanged OnEquipmentStateChanged;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
 	// Each equipable item has its type that should be set in editor
