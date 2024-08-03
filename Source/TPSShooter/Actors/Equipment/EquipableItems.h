@@ -23,6 +23,7 @@ public:
 	inline FName GetUnEquippedSocketName() const { return UnEquippedSocketName; }
 	inline FName GetEquippedSocketName() const{ return EquippedSocketName; }
 
+	// Base implementation is Delegate execution
 	virtual void Equip();
 	virtual void UnEquip();
 

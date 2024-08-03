@@ -5,6 +5,7 @@
 
 void AEquipableItems::Equip()
 {
+	// Execute a delegate 
 	if (OnEquipmentStateChanged.IsBound())
 	{
 		OnEquipmentStateChanged.Broadcast(true);
