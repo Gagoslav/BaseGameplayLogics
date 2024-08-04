@@ -6,6 +6,15 @@
 #include "Components/SceneComponent.h"
 #include "WeaponFusilComponent.generated.h"
 
+// As some types of weapon will use different registration types 
+// Like we need a projectile for a rifle
+UENUM(BlueprintType)
+enum class EHitRegistrationType :uint8
+{
+	HitScan,
+	Projectile
+};
+
 USTRUCT(BlueprintType)
 // Structre to define general data about decals
 struct FDecalInfo
@@ -34,7 +43,9 @@ class TPSSHOOTER_API UWeaponFusilComponent : public USceneComponent
 
 public:	
 	// Function that will implement firing action
-	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller, float SpreadAngle);
+	void Shot(FVector ShotStart, FVector ShotDirection, float SpreadAngle);
+
+	
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Muzle attributes")
@@ -61,6 +72,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Decals")
 	FDecalInfo DefaultDecalInfo;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Hit Registration")
+	EHitRegistrationType HitRegistration = EHitRegistrationType::HitScan;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Muzle attributes | Hit Registration", meta = (EditCondition = "HitRegistration == EHitRegistrationType::Projectile")) // this is like when the condition is wrong it will be grey
+	TSubclassOf<class ATPSProjectile> ProjectileClass;
+
 private:
 	FVector GetBulletSpreadOffset(float Angle, FRotator ShotRotation) const;
+
+	bool HitScan(const FVector & ShotStart, OUT FVector& ShotEnd, float DrawTime, const FVector & ShotDirection);
+	void LaunchProjectile(const FVector& LaunchStart, const FVector& LaunchDirection);
+
+	APawn* GetOwningPawn() const;
+	AController* GetController() const;
+
+	UFUNCTION()
+	void ProcessHit(const FHitResult& HitResult, const FVector& Direction);
 };

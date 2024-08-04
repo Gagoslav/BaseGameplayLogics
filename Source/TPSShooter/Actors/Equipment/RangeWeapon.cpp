@@ -157,7 +157,7 @@ void ARangeWeapon::MakeShot()
 
 	// Decrease bullets number
 	SetAmmo(CurrentAmmo - 1);
-	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, Controller, GetCurrentBulletSpreadAngle()); // make a shot
+	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle()); // make a shot
 
 	// If the fire mode of our current weapon is full automate we will fire automatic 
 
