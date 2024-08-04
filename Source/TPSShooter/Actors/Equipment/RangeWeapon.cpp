@@ -18,6 +18,8 @@ ARangeWeapon::ARangeWeapon()
 
 	EquippedSocketName = SocketCharacterWeapon;
 
+	ReticleType = EReticleType::Default;
+
 }
 
 void ARangeWeapon::StartFire()
@@ -219,6 +221,11 @@ bool ARangeWeapon::CanShoot() const
 EAmunitionType ARangeWeapon::GetAmmoType() const
 {
 	return AmmoType;
+}
+
+EReticleType ARangeWeapon::GetReticleType() const
+{
+	return bIsAiming ? AimReticleType : Super::GetReticleType();
 }
 
 void ARangeWeapon::BeginPlay()

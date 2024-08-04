@@ -51,6 +51,15 @@ enum class EEquipmentSlots :uint8
 	MAX UMETA(hidden)
 };
 
+UENUM(BlueprintType)
+enum class EReticleType : uint8
+{
+	None,
+	Default,
+	SniperRifle,
+	MAX UMETA(Hidden)
+};
+
 // Set Collision profile names to get them when we want to change collision profile through code
 
 const FName CollisionProfilePawn = FName("Pawn");

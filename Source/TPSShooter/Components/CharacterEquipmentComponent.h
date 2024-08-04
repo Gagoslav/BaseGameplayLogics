@@ -17,6 +17,7 @@ class ARangeWeapon;
 enum class EEquipedItemType : uint8;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams (FOnCurrentWeaponAmmoChanged, int32, int32)
+DECLARE_MULTICAST_DELEGATE_OneParam (FOnEquippedItemChanged, const AEquipableItems*)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TPSSHOOTER_API UCharacterEquipmentComponent : public UActorComponent
@@ -36,6 +37,7 @@ public:
 	bool CanReload(int32 AmmoNum);
 
 	FOnCurrentWeaponAmmoChanged OnCurrentWeaponAmmoChangedEvent;
+	FOnEquippedItemChanged OnEquippedItemChanged;
 
 	// Method responsible for equiping of selected item/weapon on character's hand
 	void EquipItemInSlot(EEquipmentSlots Slot);

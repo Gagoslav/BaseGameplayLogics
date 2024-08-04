@@ -30,6 +30,7 @@ void ATPSProjectile::LaunchProjectile(FVector Direction)
 void ATPSProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	// Bind function to the OnComponentHit event that will execute another delegate of OnProjectileHit
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ATPSProjectile::OnCollisionHit);
 }
 
@@ -40,6 +41,8 @@ void ATPSProjectile::OnProjectileLaunched()
 
 void ATPSProjectile::OnCollisionHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// We will bind OnProjectileHit in blueprints EventBeginPlay
+	// Now this delegate will be executed when our bullet is hit (collided)
 	if (OnProjectileHit.IsBound())
 	{
 		OnProjectileHit.Broadcast(Hit, ProjectileMovementComponent->Velocity.GetSafeNormal());

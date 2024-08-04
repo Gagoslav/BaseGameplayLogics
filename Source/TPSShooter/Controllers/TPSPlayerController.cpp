@@ -253,6 +253,8 @@ void ATPSPlayerController::CreateAndInitializeWidgets()
 		{
 			// Bind the delegate of ABaseCharacter with OnAimingStateChanged function of URaticleWidget
 			InBaseCharacter->OnAimingStateChanged.AddUFunction(RaticleWidget, FName("OnAimingStateChanged"));
+			UCharacterEquipmentComponent* CharacterEquipment = InBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+			CharacterEquipment->OnEquippedItemChanged.AddUFunction(RaticleWidget, FName("OnEquippedItemChanged"));
 		}
 
 		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetAmmoWidget();

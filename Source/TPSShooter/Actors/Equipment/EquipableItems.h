@@ -27,6 +27,9 @@ public:
 	virtual void Equip();
 	virtual void UnEquip();
 
+	// It will behave a bit differently in ARangeWeapon
+	virtual EReticleType GetReticleType() const{ return ReticleType; }
+
 	inline UAnimMontage* GetCharacterAnimMontage() const { return CharacterEquipAnimMontage; }
 
 protected:
@@ -49,5 +52,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemType")
 	UAnimMontage* CharacterEquipAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
+	EReticleType ReticleType = EReticleType::None;
 
 };

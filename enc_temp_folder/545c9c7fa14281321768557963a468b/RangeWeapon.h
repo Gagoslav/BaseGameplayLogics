@@ -124,8 +124,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Parameters | Ammo")
 	bool bAutoReload = true;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
-	EReticleType AimReticleType = EReticleType::Default;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reticle")
+	EReticleType AimReticleType;;
 	
 private:
 

@@ -106,6 +106,11 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 		// Call this method also during weapon creation to have an initial amount of bullets
 		OnCurrentWeaponUpdatedAmmo(CurrentEquippedWeapon->GetAmmo());
 	}
+
+	if (OnEquippedItemChanged.IsBound())
+	{
+		OnEquippedItemChanged.Broadcast(CurrentEquippedItem);
+	}
 }
 
 void UCharacterEquipmentComponent::AttachCurrentItemToEquippedSocket()
