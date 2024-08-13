@@ -32,6 +32,7 @@ class TPSSHOOTER_API ARangeWeapon : public AEquipableItems
 	GENERATED_BODY()
 public:
 
+
 	ARangeWeapon();
 
 	void StartFire();

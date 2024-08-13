@@ -9,9 +9,12 @@
 
 void AThrowableItem::Throw()
 {
-	// First step ensure that the owner of this actor is set to be our ATPSBaseCharacter on it's spawn
-	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("AThrowableItem::Throw() Only character can use the throwable Item"));
-	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
+
+	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 
 	// Here we get our ATPSPlayerController to get PlayerViewPoint later
 	APlayerController* Controller = CharacterOwner->GetController<ATPSPlayerController>();

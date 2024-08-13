@@ -10,7 +10,7 @@ void AEquipableItems::SetOwner(AActor* NewOwner)
 	if (IsValid(NewOwner))
 	{
 		checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("AEquipableItems::SetOwner() Only character can be an owner of equipable item"));
-		CachedCharacterOwner = StaticCast<ATPSBaseCharacter*>(NewOwner);
+		CachedCharacterOwner = GetCharacterOwner();
 	}
 	else
 	{

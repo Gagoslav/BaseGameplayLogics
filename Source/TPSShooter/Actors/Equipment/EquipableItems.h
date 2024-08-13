@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquipmentStateChanged, bool, bIsEquipped);
 class UAnimMontage;
+class ATPSBaseCharacter;
 
 UCLASS(Abstract, NotBlueprintable)
 class TPSSHOOTER_API AEquipableItems : public AActor
@@ -18,6 +19,8 @@ class TPSSHOOTER_API AEquipableItems : public AActor
 	GENERATED_BODY()
 
 public:
+	virtual void SetOwner(AActor* NewOwner) override;
+
 	EEquipedItemType GetEquipedItemType() const { return EquipedItemType; }
 
 	inline FName GetUnEquippedSocketName() const { return UnEquippedSocketName; }
@@ -56,4 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Reticle")
 	EReticleType ReticleType = EReticleType::None;
 
+	ATPSBaseCharacter* GetCharacterOwner() const;
+
+private:
+
+	TWeakObjectPtr<ATPSBaseCharacter> CachedCharacterOwner;
 };

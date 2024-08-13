@@ -7,6 +7,8 @@
 #include "Controllers/TPSPlayerController.h"
 #include "BaseData/BaseEnums.h"
 
+
+
 ARangeWeapon::ARangeWeapon()
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponRoot"));
@@ -56,8 +58,12 @@ void ARangeWeapon::StopAim()
 void ARangeWeapon::StartReload()
 {
 	// Get an owner character
-	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
-	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
+	
+	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 	bIsReloading = true;
 
 	// If the corresponding montages are set then play them and after they are complete callback EndReload(true)
@@ -86,11 +92,15 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 		return;
 	}
 	// If reload was unsuccessfull then stop playing montage
+	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
+
 	if (!bIsSuccess)
 	{
-		checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::StartReload() Only character can use the weapon and reload"));
-		ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
-		CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+		if (!IsValid(CharacterOwner))
+		{
+			CharacterOwner->StopAnimMontage(CharacterReloadMontage);
+		}
+		
 		StopAnimMontage(WeaponReloadMontage);
 
 	}
@@ -98,8 +108,8 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 	// Case for a shotgun (reload bullets one by one)
 	if (ReloadType == EReloadType::ByBullet)
 	{
-		ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());;
-		UAnimInstance* CharacterAnimInstance = CharacterOwner->GetMesh()->GetAnimInstance();
+		
+		UAnimInstance* CharacterAnimInstance = IsValid(CharacterOwner) ? CharacterOwner->GetMesh()->GetAnimInstance() : nullptr;
 		if (IsValid(CharacterAnimInstance))
 		{
 			CharacterAnimInstance->Montage_JumpToSection(SectionMontageReloadEnd, CharacterReloadMontage);
@@ -123,11 +133,13 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 
 void ARangeWeapon::MakeShot()
 {
-	// Assert that only character can fire, otherwise crash an editor
+	
 	// We have already initialize this actor's owner in UCharacterEquipmentComponent
-	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("ARangeWeapon::Fire() Only character can use the weapon and fire"));
-	ATPSBaseCharacter* CharacterOwner = StaticCast<ATPSBaseCharacter*>(GetOwner());
-
+	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
+	if (!IsValid(CharacterOwner))
+	{
+		return;
+	}
 	if (!CanShoot())
 	{
 		if (CurrentAmmo == 0 && bAutoReload)
