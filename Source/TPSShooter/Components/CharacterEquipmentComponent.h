@@ -14,6 +14,7 @@ typedef TArray <class AEquipableItems*, TInlineAllocator<(uint32)EEquipmentSlots
 
 class AThrowableItem;
 class ARangeWeapon;
+class AMeleeEquipableItems;
 enum class EEquipedItemType : uint8;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams (FOnCurrentWeaponAmmoChanged, int32, int32)
@@ -53,6 +54,7 @@ public:
 	void EquipPreviousItem();
 	
 	inline bool GetIsEquipping() const { return bIsEquipping; }
+	inline AMeleeEquipableItems* GetCurrentMeleeItem() const { return CurrentMeleeItem; }
 
 
 protected:
@@ -97,6 +99,7 @@ private:
 	EEquipmentSlots PreviousEquippedSlot;
 	EEquipmentSlots CurrentEquippedSlot;
 
+	AMeleeEquipableItems* CurrentMeleeItem;
 	AEquipableItems* CurrentEquippedItem;
 	AThrowableItem* CurrentThrowableItem;
 

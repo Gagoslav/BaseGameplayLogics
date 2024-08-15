@@ -7,6 +7,7 @@
 void AEquipableItems::SetOwner(AActor* NewOwner)
 {
 	Super::SetOwner(NewOwner);
+	// If we have an owner that should be casted to ATPSBaseCharacter otherwise make a crush
 	if (IsValid(NewOwner))
 	{
 		checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("AEquipableItems::SetOwner() Only character can be an owner of equipable item"));

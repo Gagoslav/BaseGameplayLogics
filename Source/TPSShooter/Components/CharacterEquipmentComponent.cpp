@@ -6,8 +6,7 @@
 #include "Actors/Equipment/RangeWeapon.h"
 #include "BaseData/BaseEnums.h"
 #include "Actors/Equipment/Throwables/ThrowableItem.h"
-
-
+#include "Actors/Equipment/MeleeEquipableItems.h"
 
 
 EEquipedItemType UCharacterEquipmentComponent::GetCurrentEquipedItemType() const
@@ -75,6 +74,7 @@ void UCharacterEquipmentComponent::EquipItemInSlot(EEquipmentSlots Slot)
 	CurrentEquippedItem = ItemsArray[(uint32)Slot];
 	CurrentEquippedWeapon = Cast<ARangeWeapon>(CurrentEquippedItem);
 	CurrentThrowableItem = Cast<AThrowableItem>(CurrentEquippedItem);
+	CurrentMeleeItem = Cast<AMeleeEquipableItems>(CurrentEquippedItem);
 
 	// And here we equip the selected items to character's arms if this item is valid
 	if (IsValid(CurrentEquippedItem))

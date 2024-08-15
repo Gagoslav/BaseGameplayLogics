@@ -18,7 +18,9 @@ enum class EEquipedItemType : uint8
 	None,
 	Pistol,
 	AssaultRifle,
-	Throwable
+	Throwable,
+	Melee,
+	MAX UMETA(Hidden)
 };
 
 UENUM(BlueprintType)
@@ -48,6 +50,7 @@ enum class EEquipmentSlots :uint8
 	PrimaryWeapon,
 	SecondaryWeapon,
 	PrimaryItemSlot,
+	Melee,
 	MAX UMETA(hidden)
 };
 
@@ -57,6 +60,15 @@ enum class EReticleType : uint8
 	None,
 	Default,
 	SniperRifle,
+	MAX UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EMeleeAttackTypes: uint8
+{
+	None,
+	PrimaryAttack,
+	SecondaryAttack,
 	MAX UMETA(Hidden)
 };
 

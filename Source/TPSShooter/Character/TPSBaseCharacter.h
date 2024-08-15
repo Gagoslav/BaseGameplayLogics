@@ -123,6 +123,9 @@ public:
 
 	void EquipPrimaryItem();
 
+	void PrimaryMeleeAttack();
+	void SecondaryMeleeAttack();
+
 	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Character")

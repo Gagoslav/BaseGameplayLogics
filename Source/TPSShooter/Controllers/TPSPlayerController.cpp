@@ -49,6 +49,8 @@ void ATPSPlayerController::SetupInputComponent()
 	InputComponent->BindAction("NextItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::NextItem);
 	InputComponent->BindAction("PreviousItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::PreviousItem);
 	InputComponent->BindAction("EquipPrimaryItem", EInputEvent::IE_Pressed, this, &ATPSPlayerController::EquipPrimaryItem);
+	InputComponent->BindAction("PrimaryMeleeAttack", EInputEvent::IE_Pressed, this, &ATPSPlayerController::PrimaryMeleeAttack);
+	InputComponent->BindAction("SecondaryMeleeAttack", EInputEvent::IE_Pressed, this, &ATPSPlayerController::SecondaryMeleeAttack);
 }
 
 
@@ -230,6 +232,22 @@ void ATPSPlayerController::EquipPrimaryItem()
 	if (InBaseCharacter.IsValid())
 	{
 		InBaseCharacter->EquipPrimaryItem();
+	}
+}
+
+void ATPSPlayerController::PrimaryMeleeAttack()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->PrimaryMeleeAttack();
+	}
+}
+
+void ATPSPlayerController::SecondaryMeleeAttack()
+{
+	if (InBaseCharacter.IsValid())
+	{
+		InBaseCharacter->SecondaryMeleeAttack();
 	}
 }
 

@@ -11,6 +11,7 @@
 #include "BaseData/BaseEnums.h"
 #include "Engine/DamageEvents.h"
 #include "Actors/Equipment/RangeWeapon.h"
+#include "Actors/Equipment/MeleeEquipableItems.h"
 
 // In initialization list we reset the character movement component of base class (ACharacter) to customly created one, using SetDefaultSubobjectClass
 ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer) 
@@ -375,6 +376,26 @@ void ATPSBaseCharacter::EquipPrimaryItem()
 {
 	CharacterEquipmentComponent->EquipItemInSlot(EEquipmentSlots::PrimaryItemSlot);
 }
+
+
+void ATPSBaseCharacter::PrimaryMeleeAttack()
+{
+	AMeleeEquipableItems* CurrentMeleeWeapon = CharacterEquipmentComponent->GetCurrentMeleeItem();
+	if (IsValid(CurrentMeleeWeapon))
+	{
+		CurrentMeleeWeapon->StartAttack(EMeleeAttackTypes::PrimaryAttack);
+	}
+}
+
+void ATPSBaseCharacter::SecondaryMeleeAttack()
+{
+	AMeleeEquipableItems* CurrentMeleeWeapon = CharacterEquipmentComponent->GetCurrentMeleeItem();
+	if (IsValid(CurrentMeleeWeapon))
+	{
+		CurrentMeleeWeapon->StartAttack(EMeleeAttackTypes::SecondaryAttack);
+	}
+}
+
 
 void ATPSBaseCharacter::OnStartAiming_Implementation()
 {
