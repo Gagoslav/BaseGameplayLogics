@@ -67,7 +67,7 @@ void AMeleeEquipableItems::ProcessHit(const FHitResult& HitResult, const FVector
 		return;
 	}
 	AActor* HitActor = HitResult.GetActor();
-	if (!IsValid(HitActor))
+	if (IsValid(HitActor))
 	{
 		return;
 	}

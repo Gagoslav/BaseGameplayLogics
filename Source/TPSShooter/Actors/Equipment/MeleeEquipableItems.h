@@ -35,13 +35,24 @@ public:
 	AMeleeEquipableItems();
 
 	void StartAttack(EMeleeAttackTypes AttackType);
+
+	void SetIsHitRegistrationEnabled(bool bIsRegistrationEnabled);
 	
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Melee Attack")
 	TMap<EMeleeAttackTypes, FMeleeAttackDescription> Attacks;
 
+	virtual void BeginPlay() override;
+
 private:
+	UFUNCTION()
+	void ProcessHit(const FHitResult& HitResult, const FVector& HitDirection);
+
+	TArray<class UMeleeHitRegistrator*> HitRegistrators;
+	// Set of already hit actors as they may be plural and are unique
+	TSet<AActor*>HitActors;
+
 	void OnAttackTimerElapsed();
 	FTimerHandle AttackTimer;
 	FMeleeAttackDescription* CurrentAttack;
