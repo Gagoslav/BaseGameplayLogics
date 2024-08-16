@@ -13,10 +13,10 @@ EEquipedItemType UCharacterEquipmentComponent::GetCurrentEquipedItemType() const
 {
 	EEquipedItemType Result = EEquipedItemType::None;
 	// Perform logic only if we have weapon in arms, othervise EEquipedItemType::None
-	if (IsValid(CurrentEquippedItem))
+	if (IsValid(CurrentEquippedWeapon))
 	{
 		// Takes a type of equipped item from equipped item object
-		Result = CurrentEquippedItem->GetEquipedItemType();
+		Result = CurrentEquippedWeapon->GetEquipedItemType();
 	}
 	return Result;
 
