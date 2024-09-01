@@ -12,8 +12,6 @@
 #include "Engine/DamageEvents.h"
 #include "Actors/Equipment/RangeWeapon.h"
 #include "Actors/Equipment/MeleeEquipableItems.h"
-#include "AIController.h"
-
 
 // In initialization list we reset the character movement component of base class (ACharacter) to customly created one, using SetDefaultSubobjectClass
 ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer) 
@@ -47,17 +45,6 @@ void ATPSBaseCharacter::Tick(float DeltaTime)
 	// Every tick check the sprint state
 	TryChangeSprintState();
 	
-}
-
-void ATPSBaseCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	AAIController* AIController = Cast<AAIController>(NewController);
-	if (IsValid(AIController))
-	{
-		FGenericTeamId TeamId((uint8)Team);
-		AIController->SetGenericTeamId(TeamId);
-	}
 }
 
 void ATPSBaseCharacter::StartSprint()
@@ -407,11 +394,6 @@ void ATPSBaseCharacter::SecondaryMeleeAttack()
 	{
 		CurrentMeleeWeapon->StartAttack(EMeleeAttackTypes::SecondaryAttack);
 	}
-}
-
-FGenericTeamId ATPSBaseCharacter::GetGenericTeamId() const
-{
-	return FGenericTeamId((uint8)Team);
 }
 
 

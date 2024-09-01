@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "BaseData/BaseEnums.h"
 #include "Turret.generated.h"
+
 
 class UWeaponFusilComponent;
 
@@ -28,6 +30,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetCurrentTarget(AActor* NewTarget);
+
+	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 
@@ -64,6 +68,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parametrs | Fire", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float FireDelayTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret parametrs | Team")
+	ETeams Team = ETeams::Enemy;
 
 private:
 

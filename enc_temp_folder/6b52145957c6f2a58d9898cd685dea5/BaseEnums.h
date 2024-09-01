@@ -72,13 +72,6 @@ enum class EMeleeAttackTypes: uint8
 	MAX UMETA(Hidden)
 };
 
-UENUM(BlueprintType)
-enum class ETeams : uint8
-{
-	Player,
-	Enemy
-};
-
 // Set Collision profile names to get them when we want to change collision profile through code
 
 const FName CollisionProfilePawn = FName("Pawn");

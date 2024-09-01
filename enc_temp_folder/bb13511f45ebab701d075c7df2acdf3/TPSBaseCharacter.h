@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GenericTeamAgentInterface.h"
-#include "BaseData/BaseEnums.h"
 #include "TPSBaseCharacter.generated.h"
 
 class UBaseCharacterMovementComponent; // Custom character movement component for Sprint implementation
@@ -67,7 +65,7 @@ typedef TArray<AInteractiveActor*, TInlineAllocator<10>> TInteractiveActorsArray
 // derived classes, it's just a level of abstraction
 
 UCLASS(Abstract, NotBlueprintable)
-class TPSSHOOTER_API ATPSBaseCharacter : public ACharacter, public IGenericTeamAgentInterface
+class TPSSHOOTER_API ATPSBaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -78,8 +76,6 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-	virtual void PossessedBy(AController* NewController) override;
 
 	//declaring pure virtual methods in an abstract base class to implement them in derived classes
 	virtual void MoveForward(float Value) {};
@@ -129,11 +125,6 @@ public:
 
 	void PrimaryMeleeAttack();
 	void SecondaryMeleeAttack();
-
-	/* IGenericTeamAgentInterface */
-	virtual FGenericTeamId GetGenericTeamId() const override;
-	/* IGenericTeamAgentInterface */
-
 
 	// All UFUNCTION(BlueprintNativeEvent) s implementation in .cpp files should be augmented with _Implementation suffix
 
@@ -210,9 +201,6 @@ protected:
 	// Methods designed to encapsulate base logics of BlueprintNativeEvents
 	virtual void OnStartAimingInternal();
 	virtual void OnStopAimingInternal();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Team")
-	ETeams Team = ETeams::Enemy;
 
 private:
 	// Declare customly created movement component

@@ -29,8 +29,6 @@ ATPSPlayerCharacter::ATPSPlayerCharacter(const FObjectInitializer& ObjectInitial
 	// Set base values for character movement component
 	GetBaseCharacterMovement()->bOrientRotationToMovement = 1;
 	GetBaseCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
-
-	Team = ETeams::Player;
 }
 
 void ATPSPlayerCharacter::MoveForward(float Value)

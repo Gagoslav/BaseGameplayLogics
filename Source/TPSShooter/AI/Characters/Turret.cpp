@@ -3,6 +3,7 @@
 
 #include "AI/Characters/Turret.h"
 #include "Components/Weapon/WeaponFusilComponent.h"
+#include "AIController.h"
 
 // Sets default values
 ATurret::ATurret()
@@ -51,6 +52,19 @@ void ATurret::SetCurrentTarget(AActor* NewTarget)
 	ETurretState NewState = IsValid(CurrentTarget) ? ETurretState::Firing : ETurretState::Searching;
 	SetCurrentTurretState(NewState);
 }
+
+
+void ATurret::PossessedBy(AController* NewController)
+{
+	APawn::PossessedBy(NewController);
+	AAIController* AIController = Cast<AAIController>(NewController);
+	if (IsValid(AIController))
+	{
+		FGenericTeamId TeamId((uint8)Team);
+		AIController->SetGenericTeamId(TeamId);
+	}
+}
+
 
 void ATurret::SearchingMovement(float DeltaTime)
 {
