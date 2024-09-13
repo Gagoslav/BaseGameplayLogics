@@ -33,11 +33,14 @@ void ATPSAICharacterController::OnMoveCompleted(FAIRequestID RequestID, const FP
 void ATPSAICharacterController::BeginPlay()
 {
 	Super::BeginPlay();
+	// Initialize local Patrolling component
 	UPatrollingPathComponent* PatrollingComponent = CachedAICharacter->GetPatrollingPath();
 	if (PatrollingComponent->CanPatroll())
 	{
+		// Move pawn to the Closest waypoint
 		FVector ClosestWayPoint = PatrollingComponent->SelectClosestWaypoint();
 		MoveToLocation(ClosestWayPoint);
+		// Set Pawn is patrolling
 		bIsPatrolling = true;
 	}
 }
@@ -49,7 +52,7 @@ void ATPSAICharacterController::ActorsPerceptionUpdated(const TArray<AActor*>& U
 	{
 		return;
 	}
-
+	// On actor's perception updated continue moving along patrolling path
 	TryMoveToNextTarget();
 }
 

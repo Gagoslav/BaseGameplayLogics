@@ -95,7 +95,9 @@ public:
 	virtual void EndSprint();
 	virtual void ChangeCrouchState();
 
+	UFUNCTION(BlueprintCallable)
 	void Mantle(bool bForce = false);
+
 	virtual bool CanJumpInternal_Implementation() const override;
 
 	// Methods responsible for movement on ladder

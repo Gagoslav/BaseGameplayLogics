@@ -18,12 +18,13 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
+	// default method of AIController, should be overriden to define the logic of AI character when it reaches the patrolling path way point
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
-	float TargetReachRadius = 100.0f;
+	float TargetReachRadius = 50.0f;
 
 	virtual void BeginPlay() override;
 	virtual void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;

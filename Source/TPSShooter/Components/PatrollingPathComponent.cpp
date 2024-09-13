@@ -24,6 +24,7 @@ FVector UPatrollingPathComponent::SelectClosestWaypoint()
 		float CurrentSqrdDistance = (OwnerLocation - WayPointWorld).SizeSquared();
 		if (CurrentSqrdDistance < MinSqrdDist)
 		{
+			MinSqrdDist = CurrentSqrdDistance;
 			ClosestWayPoint = WayPointWorld; // set world coordinates of closest to AI character way point
 			CurrentWaypointIndex = i; // get that waypoint's index
 		}
