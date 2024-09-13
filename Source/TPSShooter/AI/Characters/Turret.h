@@ -31,6 +31,7 @@ public:
 
 	void SetCurrentTarget(AActor* NewTarget);
 
+	// This function is called as soon as an actor is possessed by a controller
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:

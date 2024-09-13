@@ -53,15 +53,21 @@ void ATurret::SetCurrentTarget(AActor* NewTarget)
 	SetCurrentTurretState(NewState);
 }
 
-
+// Is called only on server
 void ATurret::PossessedBy(AController* NewController)
 {
+	// As soon as this pawn is possessed by AI controller we need to create our FGenericTeamID
+	// and Set it as AIController's GenericTeamID 
+
 	APawn::PossessedBy(NewController);
 	AAIController* AIController = Cast<AAIController>(NewController);
 	if (IsValid(AIController))
 	{
+		// By default the AI PERCEPTION COMPONENT's senses can detect only the NEUTRAL pawns
+		// and our goal here is to 
 		FGenericTeamId TeamId((uint8)Team);
 		AIController->SetGenericTeamId(TeamId);
+		
 	}
 }
 

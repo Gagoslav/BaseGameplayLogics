@@ -4,23 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Controllers/TPSAIController.h"
-#include "AITurretController.generated.h"
+#include "TPSAICharacterController.generated.h"
 
 
-class ATurret;
+class ATPSAICharacter;
 
 UCLASS()
-class TPSSHOOTER_API AAITurretController : public ATPSAIController
+class TPSSHOOTER_API ATPSAICharacterController : public ATPSAIController
 {
 	GENERATED_BODY()
 
 public:
 
-	// Default function for all controller classes
 	virtual void SetPawn(APawn* InPawn) override;
+
+protected:
+
 	virtual void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;
 
 private:
-	TWeakObjectPtr<ATurret> CachedTurret;
-	
+	TWeakObjectPtr<ATPSAICharacter> CachedAICharacter;
 };
