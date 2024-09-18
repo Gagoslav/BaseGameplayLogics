@@ -63,6 +63,9 @@ public:
 
 	virtual EReticleType GetReticleType() const override;
 
+	inline bool IsFiring() { return bIsFiring; }
+	inline bool IsReloading() { return bIsReloading; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -72,7 +75,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// Weapon's muzzle is a distinct component that is responsible for damage amount and fire distance
-	class UWeaponFusilComponent* WeaponMuzle;
+	class UWeaponFusilComponent* WeaponMuzzle;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Weapon")
 	// Animation of weapon's skeletal mesh

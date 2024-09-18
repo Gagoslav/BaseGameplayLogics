@@ -68,6 +68,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loadout")
 	TSet<EEquipmentSlots> IgnoreSlotsWhileSwitching;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loadout")
+	EEquipmentSlots AutoEquipItemInSlot;
+
 private:
 
 	void CreateLoadOut();
@@ -85,6 +88,8 @@ private:
 	uint32 NextItemsArraySlotIndex(uint32 CurrentSlotIndex);
 	uint32 PreviousItemsArraySlotIndex(uint32 CurrentSlotIndex);
 	void EquipAnimationFinished();
+
+	void AutoEquipWeapon();
 
 	bool bIsEquipping = false;
 	

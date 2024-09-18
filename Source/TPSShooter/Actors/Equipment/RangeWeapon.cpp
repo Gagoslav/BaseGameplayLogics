@@ -15,8 +15,8 @@ ARangeWeapon::ARangeWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
 
-	WeaponMuzle = CreateDefaultSubobject<UWeaponFusilComponent>(TEXT("WeaponMuzzle"));
-	WeaponMuzle->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
+	WeaponMuzzle = CreateDefaultSubobject<UWeaponFusilComponent>(TEXT("WeaponMuzzle"));
+	WeaponMuzzle->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 
 	EquippedSocketName = SocketCharacterWeapon;
 
@@ -58,7 +58,7 @@ void ARangeWeapon::StopAim()
 void ARangeWeapon::StartReload()
 {
 	// Get an owner character
-	
+
 	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
 	if (!IsValid(CharacterOwner))
 	{
@@ -100,7 +100,7 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 		{
 			CharacterOwner->StopAnimMontage(CharacterReloadMontage);
 		}
-		
+
 		StopAnimMontage(WeaponReloadMontage);
 
 	}
@@ -108,7 +108,7 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 	// Case for a shotgun (reload bullets one by one)
 	if (ReloadType == EReloadType::ByBullet)
 	{
-		
+
 		UAnimInstance* CharacterAnimInstance = IsValid(CharacterOwner) ? CharacterOwner->GetMesh()->GetAnimInstance() : nullptr;
 		if (IsValid(CharacterAnimInstance))
 		{
@@ -133,7 +133,7 @@ void ARangeWeapon::EndReload(bool bIsSuccess)
 
 void ARangeWeapon::MakeShot()
 {
-	
+
 	// We have already initialize this actor's owner in UCharacterEquipmentComponent
 	ATPSBaseCharacter* CharacterOwner = GetCharacterOwner();
 	if (!IsValid(CharacterOwner))
@@ -155,23 +155,28 @@ void ARangeWeapon::MakeShot()
 	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
 	PlayAnimMontage(WeaponFireMontage);
 
-	// We need to get our player controller to be able to find PlayerViewPoint (Centre of screen)
-	APlayerController* Controller = CharacterOwner->GetController<ATPSPlayerController>();
-	if (!IsValid(Controller))
+	FVector ShotLocation;
+	FRotator ShotRotation;
+
+	if (CharacterOwner->IsPlayerControlled()) // checks if the pawn is player or AICharacter
 	{
-		return;
+		// We need to get our player controller to be able to find PlayerViewPoint (Centre of screen)
+		APlayerController* Controller = CharacterOwner->GetController<ATPSPlayerController>();
+		Controller->GetPlayerViewPoint(ShotLocation, ShotRotation); // GetPlayerViewPoint takes OUT parameters, make
+	}
+	else
+	{
+		// if our character is controlled by AI controller and is a bot
+		ShotLocation = WeaponMuzzle->GetComponentLocation();
+		ShotRotation = CharacterOwner->GetBaseAimRotation(); // Default method of APawn class
 	}
 
-	FVector PlayerViewPoint;
-	FRotator PlayerViewRotation;
-	// For this we got APlayerController
-	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation); // GetPlayerViewPoint takes OUT parameters, makes them the centre of screen
 
-	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+	FVector ShotDirection = ShotRotation.RotateVector(FVector::ForwardVector);
 
 	// Decrease bullets number
 	SetAmmo(CurrentAmmo - 1);
-	WeaponMuzle->Shot(PlayerViewPoint, ViewDirection, GetCurrentBulletSpreadAngle()); // make a shot
+	WeaponMuzzle->Shot(ShotLocation, ShotDirection, GetCurrentBulletSpreadAngle()); // make a shot
 
 	// If the fire mode of our current weapon is full automate we will fire automatic 
 
@@ -188,16 +193,16 @@ void ARangeWeapon::OnShotTimerElapsed()
 
 	switch (WeaponFireMode)
 	{
-		case EWeaponFireMode::Single:
-		{
-			StopFire();
-			break;
-		}
-		case EWeaponFireMode::FullAutomate:
-		{
-			MakeShot();
-			break;
-		}
+	case EWeaponFireMode::Single:
+	{
+		StopFire();
+		break;
+	}
+	case EWeaponFireMode::FullAutomate:
+	{
+		MakeShot();
+		break;
+	}
 
 	}
 

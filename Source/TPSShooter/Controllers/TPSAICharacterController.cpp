@@ -5,6 +5,8 @@
 #include"AI/Characters/TPSAICharacter.h"
 #include "Perception/AISense_Sight.h"
 #include "Components/PatrollingPathComponent.h"
+#include "BaseData/BaseEnums.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 void ATPSAICharacterController::SetPawn(APawn* InPawn)
 {
@@ -13,6 +15,8 @@ void ATPSAICharacterController::SetPawn(APawn* InPawn)
 	{
 		checkf(InPawn->IsA<ATPSAICharacter>(), TEXT("ATPSAICharacterController::SetPawn(APawn* InPawn) InPawn should be only an object of ATPSAICharacter class"));
 		CachedAICharacter = StaticCast<ATPSAICharacter*>(InPawn);
+		// Default method of AIController, runs behavior tree that defines logic for AI character
+		RunBehaviorTree(CachedAICharacter->GetBehaviorTree());
 	}
 	else
 	{
@@ -39,7 +43,12 @@ void ATPSAICharacterController::BeginPlay()
 	{
 		// Move pawn to the Closest waypoint
 		FVector ClosestWayPoint = PatrollingComponent->SelectClosestWaypoint();
-		MoveToLocation(ClosestWayPoint);
+		if (IsValid(Blackboard))
+		{
+			// At the start of game we need to patrol, initialize the values of blackboard
+			Blackboard->SetValueAsVector(BB_NextLocation, ClosestWayPoint);
+			Blackboard->SetValueAsObject(BB_CurrentTarget, nullptr);
+		}
 		// Set Pawn is patrolling
 		bIsPatrolling = true;
 	}
@@ -61,21 +70,27 @@ void ATPSAICharacterController::TryMoveToNextTarget()
 
 	UPatrollingPathComponent* PatrollingComponent = CachedAICharacter->GetPatrollingPath();
 	// As in ActorsPerceptionUpdated we need to Get closest sensed actor
-	AActor* ClosestActor = GetClosestSensedActor(UAISense_Sight::StaticClass());
+	AActor* ClosestActor = GetClosestSensedActor(UAISense_Sight::StaticClass()); // initialize 
 	if (IsValid(ClosestActor))
 	{
-		if (!IsTargetReached(ClosestActor->GetActorLocation()))
+		if (IsValid(Blackboard))
 		{
-			MoveToActor(ClosestActor); // This includes our chaarcter as well
+			// If AI character notices an enemy (player) then it runs to him
+			Blackboard->SetValueAsObject(BB_CurrentTarget, ClosestActor);
+			// and turns to him
+			SetFocus(ClosestActor, EAIFocusPriority::Gameplay);
 		}
 		bIsPatrolling = false;
 	}
 	else if(PatrollingComponent->CanPatroll())
 	{
 		FVector WayPoint = bIsPatrolling? PatrollingComponent->SelectNextWaypoint() : PatrollingComponent->SelectClosestWaypoint();
-		if (!IsTargetReached(WayPoint))
+		if (IsValid(Blackboard))
 		{
-			MoveToLocation(WayPoint); // this is patrolling path's waypoint
+			ClearFocus(EAIFocusPriority::Gameplay);
+			// Otherwise AI character continues patrolling
+			Blackboard->SetValueAsVector(BB_NextLocation, WayPoint);
+			Blackboard->SetValueAsObject(BB_CurrentTarget, nullptr);
 		}
 		bIsPatrolling = true;
 	}

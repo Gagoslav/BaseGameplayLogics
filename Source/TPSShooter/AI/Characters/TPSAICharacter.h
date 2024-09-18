@@ -8,6 +8,7 @@
 
 
 class UPatrollingPathComponent;
+class UBehaviorTree;
 
 UCLASS(Blueprintable)
 class TPSSHOOTER_API ATPSAICharacter : public ATPSBaseCharacter
@@ -17,10 +18,16 @@ public:
 	ATPSAICharacter(const FObjectInitializer & ObjectInitializer);
 
 	UPatrollingPathComponent* GetPatrollingPath() const {  return AIPatrollingComponent;}
+	UBehaviorTree* GetBehaviorTree() const { return BehaviorTree; }
 
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UPatrollingPathComponent* AIPatrollingComponent;
+
+
+	// Add behavior tree
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	UBehaviorTree* BehaviorTree;
 		
 };

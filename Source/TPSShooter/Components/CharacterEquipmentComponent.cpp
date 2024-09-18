@@ -29,7 +29,7 @@ void UCharacterEquipmentComponent::BeginPlay()
 	checkf(GetOwner()->IsA<ATPSBaseCharacter>(), TEXT("UCharacterEquipmentComponent::BeginPlay() Owner of Equipment component can be only ABaseCharacter actor"));
 	InBaseCharacter = StaticCast<ATPSBaseCharacter*>(GetOwner());
 	CreateLoadOut();
-
+	AutoEquipWeapon();
 
 }
 
@@ -273,6 +273,14 @@ void UCharacterEquipmentComponent::EquipAnimationFinished()
 {
 	bIsEquipping = false;
 	AttachCurrentItemToEquippedSocket();
+}
+
+void UCharacterEquipmentComponent::AutoEquipWeapon()
+{
+	if (AutoEquipItemInSlot != EEquipmentSlots::None)
+	{
+		EquipItemInSlot(AutoEquipItemInSlot);
+	}
 }
 
 void UCharacterEquipmentComponent::OnCurrentWeaponUpdatedAmmo(int32 Ammo)

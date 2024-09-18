@@ -11,6 +11,8 @@ bool UPatrollingPathComponent::CanPatroll() const
 
 FVector UPatrollingPathComponent::SelectClosestWaypoint()
 {
+
+	// Get AI character location and get transform of Patrolling path, to be able to change the local coordinates of waypoints to the global ones
 	FVector OwnerLocation = GetOwner()->GetActorLocation();
 	const TArray<FVector>WayPoints = PatrollingPath->GetWayPoints();
 	FTransform PathTransform = PatrollingPath->GetActorTransform();
@@ -20,6 +22,7 @@ FVector UPatrollingPathComponent::SelectClosestWaypoint()
 
 	for (int32 i = 0; i < WayPoints.Num(); ++i)
 	{
+
 		FVector WayPointWorld = PathTransform.TransformPosition(WayPoints[i]);
 		float CurrentSqrdDistance = (OwnerLocation - WayPointWorld).SizeSquared();
 		if (CurrentSqrdDistance < MinSqrdDist)
@@ -34,6 +37,7 @@ FVector UPatrollingPathComponent::SelectClosestWaypoint()
 
 FVector UPatrollingPathComponent::SelectNextWaypoint()
 {
+	// Just get next waypoint index and get world location of that waypoint
 	++CurrentWaypointIndex;
 	const TArray<FVector>WayPoints = PatrollingPath->GetWayPoints();
 	if (CurrentWaypointIndex == PatrollingPath->GetWayPoints().Num())

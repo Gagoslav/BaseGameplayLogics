@@ -101,3 +101,6 @@ const FName DebugCategoryMelee = FName("Melee");
 const FName FXParamTraceEnd = FName("TraceEnd");
 
 const FName SectionMontageReloadEnd = FName("EndReload");
+
+const FName BB_CurrentTarget = FName("CurrentTarget");
+const FName BB_NextLocation = FName("NextLocation");
