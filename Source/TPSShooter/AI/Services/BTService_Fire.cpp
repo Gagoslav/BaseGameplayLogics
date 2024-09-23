@@ -15,20 +15,20 @@ UBTService_Fire::UBTService_Fire()
 
 void UBTService_Fire::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds); 
+	// The logic here is somehow similar to the one of UBT_Task
+
+	AAIController* AIController = OwnerComp.GetAIOwner(); // Get AIController from BehaviorTree
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent(); //  Get Blackboard from BehaviorTree
 	if (!IsValid(AIController) || !IsValid(Blackboard))
 	{
 		return;
 	}
 
-	ATPSBaseCharacter* Character = Cast<ATPSBaseCharacter>(AIController->GetPawn());
-	if (!IsValid(Character))
-	{
-		return;
-	}
+	checkf(AIController->GetPawn()->IsA<ATPSBaseCharacter>(), TEXT("UBTService_Fire::TickNode possessed by AIController's pawn should be of ATPSBaseCharacter type"));
+	ATPSBaseCharacter* Character = StaticCast<ATPSBaseCharacter*>(AIController->GetPawn());
 
+	// Get our possessed AI character's Weapon through its Equipment component
 	const UCharacterEquipmentComponent* EquipmentComponent = Character->GetCharacterEquipmentComponent();
 	ARangeWeapon* Weapon = EquipmentComponent->GetCurrentWeapon();
 
@@ -45,6 +45,7 @@ void UBTService_Fire::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 		return;
 	}
 
+	// It's better to count in squred distance not to count root if we need just to compare distances
 	float DistSq = FVector::DistSquared(CurrentTarget->GetActorLocation(), Character->GetActorLocation());
 	if (DistSq > FMath::Square(MaxFireDistance))
 	{

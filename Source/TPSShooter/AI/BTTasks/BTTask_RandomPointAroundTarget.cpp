@@ -15,25 +15,30 @@ UBTTask_RandomPointAroundTarget::UBTTask_RandomPointAroundTarget()
 
 EBTNodeResult::Type UBTTask_RandomPointAroundTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+	// Here we don't call base method's implementation as it returns EBTNodeResult::Success by default
+
+	AAIController* AIController = OwnerComp.GetAIOwner(); // Get AIController from BehaviorTree
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent(); //  Get Blackboard from BehaviorTree
 	if (!IsValid(AIController) || !IsValid(Blackboard))
 	{
 		return EBTNodeResult::Failed;
 	}
 
+	// Get AI pawn
 	APawn* Pawn = AIController->GetPawn();
 	if (!IsValid(Pawn))
 	{
 		return EBTNodeResult::Failed;
 	}
 
+	// For getting navigation system we should #include "NavigationSystem.h"
 	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(Pawn);
 	if (!IsValid(NavSys))
 	{
 		return EBTNodeResult::Failed;
 	}
 
+	// Initialize Target actor as a Blackboard's key of object type, casted to actor
 	AActor* TargetActor = Cast<AActor>(Blackboard->GetValueAsObject(TargetKey.SelectedKeyName));
 	if (IsValid(TargetActor))
 	{
@@ -48,6 +53,7 @@ EBTNodeResult::Type UBTTask_RandomPointAroundTarget::ExecuteTask(UBehaviorTreeCo
 		return EBTNodeResult::Failed;
 	}
 
+	// Write the Blackboard's key in FVector type
 	Blackboard->SetValueAsVector(LocationKey.SelectedKeyName, NavLocation.Location);
 	return EBTNodeResult::Succeeded;
 }

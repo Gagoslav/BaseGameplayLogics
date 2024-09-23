@@ -6,6 +6,7 @@
 
 ATPSAIController::ATPSAIController()
 {
+	// In constructor we only initialize the perception component
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 
 }
@@ -18,6 +19,7 @@ AActor* ATPSAIController::GetClosestSensedActor(TSubclassOf<UAISense> SenseClass
 		return nullptr;
 	}
 
+	// Declare an array where we will store all sensed actors
 	TArray<AActor*>SensedActors;
 
 	// Initializing the SeenActors (GetCurrentlyPerceivedActors takes OUT reference), PerceptionComponent is default field of AAIController
@@ -30,6 +32,7 @@ AActor* ATPSAIController::GetClosestSensedActor(TSubclassOf<UAISense> SenseClass
 	// Iterate all seen actors and find the closest one
 	for (AActor* SeenActor : SensedActors)
 	{
+		// it's preferable to count in squared to prevent from extra calculations of root
 		float CurrentSquaredDistance = (PawnLocation - SeenActor->GetActorLocation()).SizeSquared();
 		if (CurrentSquaredDistance < MinSquaredDistance)
 		{
